@@ -1,0 +1,259 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String @unique
+  name     String
+  imageUrl String
+  email    String
+  role     String @default("user")
+
+  rollNumber     String?
+  teacherEmailId String?
+  address        String?
+  cityName       String?
+  country        String?
+  zipCode        Int?
+  phone          Int?
+  center         String?
+  joiningDate    String?
+  expiryDate     String?
+  examDate       String?
+
+  testSessions TestSession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Test {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String
+  overallDuration String
+
+  sectionDuration String[]
+  sections        String[]
+  totalAttempts   Int?
+
+  testSessions                  TestSession[]
+  Questions                     Question[]
+  multipleChoiceQuestions       MultipleChoiceQuestion[]
+  multipleAnswerQuestions       MultipleAnswerQuestion[]
+  readingComprehensionQuestions ReadingComprehensionQuestion[]
+  quantitativeQuestions         QuantitativeQuestion[]
+  analyticalWritingQuestions    AnalyticalWritingQuestion[]
+  dataInterpretationQuestions   DataInterpretationQuestion[]
+}
+
+model TestSession {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  profileId         String   @db.ObjectId
+  testId            String   @db.ObjectId
+  duration          String
+  startTime         DateTime
+  endTime           DateTime
+  sectionEndTimes   String[]
+  incompleteSection String   @default("AnalyticalWriting")
+  currentSection    String   @default("AnalyticalWriting")
+  currentQuestion   Int      @default(0)
+  finished          Boolean  @default(false)
+
+  sessionAnswers Json
+  results        Boolean[]
+  resultMarks    Int?
+  questionMarks  Int[]
+  essayMarks     Int?
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  test    Test    @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model QuestionType {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  type String
+
+  questions                     Question[]
+  multipleChoiceQuestions       MultipleChoiceQuestion[]
+  multipleAnswerQuestions       MultipleAnswerQuestion[]
+  readingComprehensionQuestions ReadingComprehensionQuestion[]
+  quantitativeQuestions         QuantitativeQuestion[]
+  analyticalWritingQuestions    AnalyticalWritingQuestion[]
+  dataInterpretationQuestions   DataInterpretationQuestion[]
+}
+
+model Instructions {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+}
+
+model ReadingComprehensionQuestion {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  typeId          String   @db.ObjectId
+  testId          String   @db.ObjectId
+  subject         String?
+  correctAnswer   Int[]
+  correctSentence String[]
+  questionText    String
+  options         String[]
+  section         String
+  paragraph       String
+  description     String?
+  marks           Int?
+
+  highlighted         Boolean?
+  select              Boolean?
+  highlightedSentence String?
+  option              Int?
+
+  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+}
+
+model MultipleAnswerQuestion {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  typeId        String   @db.ObjectId
+  testId        String   @db.ObjectId
+  subject         String?
+  correctAnswer Int[]
+  questionText  String
+  options       String[]
+  section       String
+  description   String?
+  marks         Int?
+
+  blankType      String?
+  numberOfBlanks Int?
+  blankOptions   String[]
+  numerator      Int?
+  denominator    Int?
+  units          String?
+  correctNumeric Int?
+
+  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+}
+
+model DataInterpretationQuestion {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  typeId        String   @db.ObjectId
+  testId        String   @db.ObjectId
+  subject         String?
+  correctAnswer Int[]
+  questionText  String
+  options       String[]
+  section       String
+  description   String?
+  marks         Int?
+
+  optionType     String?
+  numerator      Int?
+  denominator    Int?
+  units          String?
+  correctNumeric Int?
+  question       String?
+  images         String[]
+
+  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+}
+
+model MultipleChoiceQuestion {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  typeId        String   @db.ObjectId
+  testId        String   @db.ObjectId
+  subject         String?
+  correctAnswer Int[]
+  questionText  String
+  options       String[]
+  section       String
+  description   String?
+  marks         Int?
+
+  image    Boolean?
+  ImageUrl String?
+  option   Int?
+
+  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+}
+
+model QuantitativeQuestion {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  typeId        String   @db.ObjectId
+  testId        String   @db.ObjectId
+  subject         String?
+  correctAnswer Int[]
+  questionText  String
+  options       String[]
+  section       String
+  description   String?
+  marks         Int?
+
+  Quantity1 String
+  Quantity2 String
+  image     Boolean?
+  ImageUrl1 String?
+  ImageUrl2 String?
+  option    Int?
+
+  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+}
+
+model AnalyticalWritingQuestion {
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  typeId        String  @db.ObjectId
+  testId        String  @db.ObjectId
+  subject         String?
+  correctAnswer Int[]
+  questionText  String
+  section       String
+  description   String?
+  marks         Int?
+
+  prompt String
+
+  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+}
+
+model Question {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  typeId        String   @db.ObjectId
+  testId        String   @db.ObjectId
+  subject         String?
+  questionText  String
+  options       String[]
+  correctAnswer Int[]
+  section       String
+  paragraph     String
+  description   String?
+
+  highlighted         Boolean?
+  blankType           String?
+  select              Boolean?
+  image               Boolean?
+  option              Int?
+  numberOfBlanks      Int?
+  blankOptions        String[]
+  highlightedSentence String?
+
+  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,75 @@
+.TopDev_Mobileslider{
+    position: relative;
+    width: 100vw;
+    height: 12rem;
+    background-color: var(--blox-color-thunder);
+    box-shadow: 0.8rem 1.4rem -.2rem #0001;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+.TopDev_Mobileslider::before,
+.TopDev_Mobileslider::after{
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 12rem;
+}
+.TopDev_Mobileslider::before{
+    left: 0;
+    background: linear-gradient(to right, var(--blox-color-thunder) 0%, #0000 100%);
+}
+.TopDev_Mobileslider::after{
+    right: 0;
+    background: linear-gradient(to left, var(--blox-color-thunder) 0%, #0000 100%);
+}
+.TopDev_MobileDevelopers{
+    list-style: 
+    none;
+    display: flex;
+    animation: slideleft 14s linear infinite;
+}
+
+
+@keyframes slideleft{
+    100%{
+        transform: translateX(calc(-100%/ 2));
+    }
+}
+
+@keyframes rolling-right-1{
+    0% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(100%);
+    }
+    50.01% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+@keyframes rolling-right-2{
+    0% {
+        transform: translateX(-200%);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.animate-rolling-right-1 {
+    animation: rolling-right-1 5s linear infinite;
+}
+.animate-rolling-right-2 {
+    animation: rolling-right-2 5s linear infinite;
+}
+
+@media screen and (max-width: 768px){
+    /* .TopDev_MobileDeveloperLogo{
+        width: 200px;
+    } */
+}
