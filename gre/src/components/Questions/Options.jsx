@@ -36,14 +36,19 @@ const Options = ({ question, selectmode }) => {
     }, [currentSession, previousLength, currentQuestion, setSelectedChoices]);
 
     const handleOptionClick = (index) => {
-        if (selectedChoices.length < maxSelections || selectedChoices.includes(index)) {
+        if (selectedChoices.length === maxSelections && !selectedChoices.includes(index)) {
+            // Automatically deselect the previous option and select the new option
+            const updatedChoices = [...selectedChoices.slice(1), index];
+            setSelectedChoices(updatedChoices);
+        } else {
+            // Handle normal selection/deselection behavior
             const updatedChoices = selectedChoices.includes(index)
                 ? selectedChoices.filter((choice) => choice !== index)
                 : [...selectedChoices, index];
             setSelectedChoices(updatedChoices);
         }
         setClicked(true);
-    };
+    };    
 
     return (
         <>

@@ -207,7 +207,7 @@ export async function POST(req, res) {
       if (question.questionType.type === "AnalyticalWriting") {
         const assessment = await assessEssay(question.prompt, userAnswer[0]);
 
-        console.log(assessment);
+        console.log(assessment.marks);
         questionMarks[index] = marks;
         console.log(questionMarks, resultMarks);
         await sendEmailToTeacher(userAnswer[0]);

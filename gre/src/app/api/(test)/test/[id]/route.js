@@ -55,7 +55,6 @@ export async function DELETE(req, {params}) {
   /*  const {id} = await req.params; */
 
   try {
-
     console.log(params.id);
     const deletedTest = await db.test.delete({
       where: { id : params.id },

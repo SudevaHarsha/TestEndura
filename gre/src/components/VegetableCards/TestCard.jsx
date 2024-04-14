@@ -34,18 +34,6 @@ const TestCard = ({ test, index }) => {
     router.push(`/mock-tests/create-testsession/${test?.id}`)
   }
 
-  /*   const togglePlay = () => {
-      const gif = gifRef.current;
-      if (gif) {
-        if (isHovered) {
-          gif.pause();
-        } else {
-          gif.play();
-        }
-        setIsHovered(!isHovered);
-      }
-    }; */
-
   return <>
     <div className={`w-72 h-72 rounded-lg p-6 flex flex-col justify-between text-white ${vegetables[index].color} shadow-lg mx-4 mb-8 overflow-hidden transition-all duration-300 transform hover:scale-105 hover:translate-y-[-15px] hover:translate-x-[-5px] hover:shadow-2xl hover:shadow-black/60`} onClick={handleClick}>
       <div>
@@ -65,14 +53,14 @@ const TestCard = ({ test, index }) => {
         {/* <GifPlayer gifUrl="/i4.gif" previewUrl="/i4.png" width={200} height={200} /> */}
         {isHovered ? <Image
           /* src={`/mock-${index}.gif`} */
-          src={`/gre-gif${index + 1}.gif`}
+          src={`/gre-gif${index + 1}-ezgif.com-gif-maker.webp`}
           alt="Gre Test Logo"
           width={200}
           height={200}
           style={{ cursor: "pointer" }}
         /> : <Image
           /* src={`/static-mock-${index}.gif`} */
-          src={`/gre${index + 1}.gif`}
+          src={`/gre${index + 1}.webp`}
           alt='Static Gre Test Logo'
           width={200}
           height={200}

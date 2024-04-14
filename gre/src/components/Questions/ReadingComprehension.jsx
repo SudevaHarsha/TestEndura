@@ -69,7 +69,7 @@ const ReadingCompehension = ({ question, NextQuestion }) => {
                     <span key={index} className={`${sentence.includes(targetSentence) && question.highlighted === true ? "bg-strong text-white" : ""
                         } ${(selectedSentence === index || selectedChoices.includes(sentence)) && selectmode === true ? "underline" : ""}`} onClick={() => {
                             setSelectedSentence(index);
-                            setSelectedChoices([...selectedChoices, sentence])
+                            selectedChoices.length < 1 && setSelectedChoices([...selectedChoices, sentence])
                         }}
                         style={{
                             textDecorationColor:
