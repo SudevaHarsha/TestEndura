@@ -14,12 +14,12 @@ const RemainingCards = ({ filteredSessions }) => {
 
   console.log(filteredSessions);
   const handleResumeClick = (index) => {
-    setCurrentSession(filteredSessions[filteredSessions.length - 4 + index]);
-    setCurrentQuestion(filteredSessions[filteredSessions.length - 4 + index].currentQuestion - 1)
-    console.log(filteredSessions[filteredSessions.length - 4 + index].id)
-    setCurrentSection(filteredSessions[filteredSessions.length - 4 + index].currentSection)
+    setCurrentSession(filteredSessions[filteredSessions?.length - 4 + index]);
+    setCurrentQuestion(filteredSessions[filteredSessions?.length - 4 + index].currentQuestion - 1)
+    console.log(filteredSessions[filteredSessions?.length - 4 + index].id)
+    setCurrentSection(filteredSessions[filteredSessions?.length - 4 + index].currentSection)
     setResume(true);
-    router.push(`/mock-tests/resume-test/${filteredSessions[filteredSessions.length - 4 + index].id}`)
+    router.push(`/mock-tests/resume-test/${filteredSessions[filteredSessions?.length - 4 + index].id}`)
   }
 
   const generatePersonalizedMessage = (sessionRemained) => {
@@ -41,7 +41,7 @@ const RemainingCards = ({ filteredSessions }) => {
 
   return (
     <div className='sm:flex sm:flex-row sm:w-full sm:flex-wrap sm:gap-9 sm:items-center sm:justify-center sm:mt-7 flex flex-col gap-6 items-center justify-center mt-7'>
-      {filteredSessions.slice(-4).map((sessionRemained, index) => {
+      {filteredSessions?.slice(-4).map((sessionRemained, index) => {
         console.log(sessionRemained)
         const progress = (sessionRemained.currentQuestion / 20) * 100; // Assuming totalQuestions is defined somewhere
         const personalizedMessage = generatePersonalizedMessage(sessionRemained); // Function to generate personalized message

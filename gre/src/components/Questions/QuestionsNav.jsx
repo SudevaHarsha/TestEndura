@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState } from 'react'
-import qs from "query-string";
 import { Button } from '../ui/button'
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import TimerClock from '../Timer'
