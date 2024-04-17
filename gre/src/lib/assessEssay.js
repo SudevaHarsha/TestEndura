@@ -45,8 +45,7 @@ const assessEssay = async (question, essay) => {
       response_format: { type: "json_object" },
     });
     const response = completion.choices[0].message.content;
-    console.log(completion, completion.choices[0].message);
-    console.log("text",completion, completion.choices[0].message.text);
+
     return parseOpenAIResponse(response);
   } catch (error) {
     console.log(error);

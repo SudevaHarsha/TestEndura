@@ -37,7 +37,7 @@ const QuestionsNav = ({ questionLength, test, testSession, handleNext, NextQuest
              url: `/api/updateTestDuration/${testSession.id}`,
              query: socketQuery,
            }); */
-        const response = await axios.put(`/api/updateTestDuration/${currentSession ? currentSession.id : testSession.id}`, {
+        const response = await axios.put(`/api/updateTestDuration/${currentSession ? currentSession.id : currentSession.id}`, {
             currentQuestion, currentSection, finished: false, sessionAnswers: currentSession.sessionAnswers
         });
         console.log(response.testSession);

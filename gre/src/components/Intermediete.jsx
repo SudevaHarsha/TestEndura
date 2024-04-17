@@ -4,18 +4,23 @@ import { useCurrentQuestion } from '@/providers/CurrentQuestionContext';
 import { useCurrentSession } from '@/providers/CurrentSessionContext';
 import { useRouter } from 'next/navigation'
 import React from 'react'
+import TestTakerIns from './Instructions/TestTakerIns';
+import InstructionsCaller from './Instructions/InstructionsCaller';
+import { useCurrentTest } from '@/providers/CurrentTestDetails';
 
-const Intermediete = ({testSession}) => {
-    const router = useRouter();
-    const {setCurrentSection} = useCurrentQuestion();
-    const {setCurrentSession} = useCurrentSession();
-    console.log(testSession.test.sections[0])
-    setCurrentSection(testSession.test.sections[0]);
-    setCurrentSession(testSession);
+const Intermediete = ({ testSession }) => {
+  const router = useRouter();
+  const { setCurrentSection,setInstructions,instructions } = useCurrentQuestion();
+  const { setCurrentSession,currentSession } = useCurrentSession();
+  const { setCurrentTest } = useCurrentTest();
+  console.log(testSession.test.sections[0])
+  setCurrentSection(testSession.test.sections[0]);
+  setCurrentSession(testSession);
+  setCurrentTest(testSession.test);
 
-    router.push(`insrtructions/${testSession.id}`)
+  /* router.push(`/mock-tests/${testSession.id}`); */
   return (
-    <div>Redirecting to test</div>
+    <InstructionsCaller sessionId={testSession.id} />
   )
 }
 

@@ -208,7 +208,7 @@ export async function POST(req, res) {
         const assessment = await assessEssay(question.prompt, userAnswer[0]);
 
         console.log(assessment.marks);
-        questionMarks[index] = marks;
+        questionMarks[index] = assessment.marks;
         console.log(questionMarks, resultMarks);
         await sendEmailToTeacher(userAnswer[0]);
       }

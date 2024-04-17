@@ -64,7 +64,11 @@ const AllQuestions = ({ questions, testSession, test, previousSectionsLengths })
     setCurrentSection(sectionKeys[currentIndex + 1]);
     console.log(currentSection); */
     console.log(updatedTestSession);
-    router.push(`/timepause/${currentSession.id}`)
+    const sectionKeys = test.sections;
+    const currentIndex = sectionKeys.indexOf(currentSection);
+
+    setCurrentSection(sectionKeys[currentIndex + 1]);
+    setCurrentQuestion(0);
     setSelectedChoices([])
   }
 
@@ -118,8 +122,9 @@ const AllQuestions = ({ questions, testSession, test, previousSectionsLengths })
   const NextQuestion = () => {
     if (currentSection === currentSession.test.sections[currentSession.test.sections.length - 1] && currentQuestion === questions.length - 1) {
       console.log("entered");
-      handleSubmit();
       router.push("/submission")
+      console.log('navigated to submission')
+      handleSubmit();
 
       setCurrentSection(currentSession.test.sections[0]);
       setCurrentQuestion(0);
