@@ -29,7 +29,7 @@ const TestCenterRegulationsIns = ({handleNextInsrtruction}) => {
             </ul>
             <p className="mb-4">
                 ETS reserves the right to take action for failure to comply with test administration regulations or the test
-                administrator's directions. Such action may include, but is not limited to, barring you from future testing
+                administrator&aposs directions. Such action may include, but is not limited to, barring you from future testing
                 and/or withholding or canceling your scores. If your scores are canceled, they will not be reported, and your
                 registration and test fees will not be refunded. Reports of cheating or fraud will be investigated thoroughly
                 and offenders may be prosecuted to the full extent of the applicable laws.

@@ -62,7 +62,7 @@ const QuantitativeQuestions = ({ question, NextQuestion }) => {
 
   return <>
     <div className="h-auto md:w-[80vw] max-w-4xl w-[90vw] flex flex-col justify-center items-center">
-      <div className="w-10">fugadjgmam</div>
+      
       <div className="d-block sm:flex w-full justify-between mt-5">
         <div className={`${questionHasImage ? `w-full` : `w-full`}`}>
           <Card className="w-full mt-4 rounded-2xl">
