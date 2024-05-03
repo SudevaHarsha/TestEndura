@@ -13,9 +13,16 @@ import Options from "./Options";
 import { useCurrentQuestion } from "@/providers/CurrentQuestionContext";
 import { useRouter } from "next/navigation";
 import Image from "next/image"
+import ScientificCalculator from "./ScientificCaluculator";
+import { useCurrentTest } from "@/providers/CurrentTestDetails";
+import { FaCalculator } from "react-icons/fa";
 
 const QuantitativeQuestions = ({ question, NextQuestion }) => {
   const router = useRouter();
+
+  /* const { caluculator, setCaluculator } = useCurrentTest(); */
+  const [openCaluculator, setOpenCaluculator] = useState(false);
+
   const quantities = [
     {
       label: "Quantity 1",
@@ -27,7 +34,7 @@ const QuantitativeQuestions = ({ question, NextQuestion }) => {
     },
   ];
 
-  const { currentQuestion,currentSection } = useCurrentQuestion();
+  const { currentQuestion, currentSection } = useCurrentQuestion();
 
   const handleNextQuestion = () => {
     if (currentQuestion === 8) {
@@ -37,6 +44,10 @@ const QuantitativeQuestions = ({ question, NextQuestion }) => {
     }
   };
 
+  const handleCaluculatorOpen = () => {
+    setOpenCaluculator(!openCaluculator);
+  }
+
   const options = [
     "A is greater",
     "B is greater",
@@ -45,12 +56,13 @@ const QuantitativeQuestions = ({ question, NextQuestion }) => {
   ];
 
   const [selectedChoices, setSelectedChoices] = useState([]);
-  const questionHasImage = question.image; 
+  const questionHasImage = question.image;
 
   console.log(question.ImageUrl1);
 
-  return (
+  return <>
     <div className="h-auto md:w-[80vw] max-w-4xl w-[90vw] flex flex-col justify-center items-center">
+      <div className="w-10">fugadjgmam</div>
       <div className="d-block sm:flex w-full justify-between mt-5">
         <div className={`${questionHasImage ? `w-full` : `w-full`}`}>
           <Card className="w-full mt-4 rounded-2xl">
@@ -66,8 +78,8 @@ const QuantitativeQuestions = ({ question, NextQuestion }) => {
                     <div className="pt-2">{question.Quantity1}</div>
                     {/* Add image for Quantity 1 */}
                     {questionHasImage && <Image
-                    width={100}
-                    height={80}
+                      width={100}
+                      height={80}
                       src={question.ImageUrl1}
                       alt="Quantity 1 Image"
                       className="h-48 w-80 mt-4"
@@ -81,8 +93,8 @@ const QuantitativeQuestions = ({ question, NextQuestion }) => {
                     <div className="pt-2">{question.Quantity2}</div>
                     {/* Add image for Quantity 2 */}
                     {questionHasImage && <Image
-                    width={100}
-                    height={80}
+                      width={100}
+                      height={80}
                       src={question.ImageUrl2}
                       alt="Quantity 2 Image"
                       className="h-48 w-80 mt-4"
@@ -100,14 +112,14 @@ const QuantitativeQuestions = ({ question, NextQuestion }) => {
               size="lg"
               onClick={handleNextQuestion}
             >
-              {currentSection==="QuantativeReasoning2" && currentQuestion === 19 ? "Submit" : "Next"}{" "}
+              {currentSection === "QuantativeReasoning2" && currentQuestion === 19 ? "Submit" : "Next"}{" "}
               <ChevronRight className="w-4 h-4 ml-2 text-white" />
             </Button>
           </div>
         </div>
       </div>
     </div>
-  );
+  </>
 };
 
 export default QuantitativeQuestions;

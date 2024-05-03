@@ -12,6 +12,9 @@ import axios from 'axios';
 import { db } from '@/lib/db';
 import { useCurrentSession } from '@/providers/CurrentSessionContext';
 
+import { FaCalculator } from 'react-icons/fa';
+import { useCurrentTest } from '@/providers/CurrentTestDetails';
+
 const QuestionsNav = ({ questionLength, test, testSession, handleNext, NextQuestion }) => {
 
     const router = useRouter();
@@ -25,6 +28,7 @@ const QuestionsNav = ({ questionLength, test, testSession, handleNext, NextQuest
 
     const { currentQuestion, setCurrentQuestion, setReview, currentSection, setExitSection, setHelp, markQuestions, setMarkQuestions } = useCurrentQuestion();
     const { currentSession } = useCurrentSession();
+    const {caluculator,setCaluculator} = useCurrentTest();
     /* const {sessionStarted, sessionExpired, minutes, seconds, resetTimer, duration} = useTimer(); */
 
     const PreviousQuestion = () => {
@@ -80,6 +84,11 @@ const QuestionsNav = ({ questionLength, test, testSession, handleNext, NextQuest
         setMarkQuestions([...markQuestions, currentQuestion])
     }
 
+    const handleCaluculator = () => {
+        console.log('caluculator');
+        setCaluculator(!caluculator);
+    }
+
     return <>
         <div className="w-[100%] sm:flex justify-between p-6 pb-0 hidden">
             <div className="flex flex-col">
@@ -90,33 +99,36 @@ const QuestionsNav = ({ questionLength, test, testSession, handleNext, NextQuest
                         {currentSection}
                     </span>
                 </p>
-                <div className="flex self-start mt-3 text-slate-400">
+                {currentSection.slice(-3) != 'Ins' && <div className="flex self-start mt-3 text-slate-400">
                     <Timer className="mr-2" />
                     <TimerClock TestDuration="30" test={test} testSession={testSession} />
-                </div>
+                </div>}
             </div>
-            <div>
+            {currentSection.slice(-3) != 'Ins' && <div>
                 Question <span className='font-bold'>{currentQuestion + 1}</span> <span>{"/" + questionLength}</span>
-            </div>
+            </div>}
             <div className='flex gap-6'>
                 <div className=' flex gap-4'>
                     <div className="text center">
                         <Button className="h-11 w-20 text-white bg-strong hover:bg-strong/90 px-3 my-auto text-center" onClick={handleHelpSection}>Help</Button>
                     </div>
-                    <div className="text center">
-                        <Button className="h-11 w-20 text-white bg-secondary hover:bg-secondary/90 px-3 my-auto text-center" onClick={handleMark}>Mark</Button>
-                    </div>
-                    <div className="text center">
-                        <Button className="h-11 w-20 text-white bg-secondary hover:bg-secondary/90 px-3 my-auto text-center" onClick={() => setReview(true)}>Review</Button>
-                    </div>
+                    {currentSection.slice(-3) != 'Ins' && <>
+                        <div className="text center">
+                            <Button className="h-11 w-20 text-white bg-secondary hover:bg-secondary/90 px-3 my-auto text-center" onClick={handleMark}>Mark</Button>
+                        </div>
+                        <div className="text center">
+                            <Button className="h-11 w-20 text-white bg-secondary hover:bg-secondary/90 px-3 my-auto text-center" onClick={() => setReview(true)}>Review</Button>
+                        </div>
+                    </>}
                 </div>
                 <div className='flex gap-4'>
-                    <div className="text center">
+                    {currentSection.slice(-3) != 'Ins' && <div className="text center">
                         <Button onClick={handleExitSection} className="h-11 text-white bg-red-600 hover:bg-red-600/90 px-3 my-auto text-center"> Exit Section</Button>
-                    </div>
-                    <div className="text center">
+                    </div>}
+                    {currentSection.slice(-3) != 'Ins' && <div className="text center">
                         <Button onClick={handleExit} className="h-11 text-white bg-red-600 hover:bg-red-600/90 px-3 my-auto text-center"> Exit Test</Button>
-                    </div>
+                    </div>}
+                    {currentSection.includes('Quantative') && <div onClick={handleCaluculator}><FaCalculator /></div>}
                     <div className="text center">
                         <Button onClick={PreviousQuestion} className="h-11 text-white bg-strong hover:bg-strong/90 px-3 my-auto text-center"><ChevronLeft className="w-4 h-4 mr-2 text-white" /> previous</Button>
                     </div>

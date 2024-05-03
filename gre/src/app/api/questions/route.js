@@ -33,7 +33,7 @@ export async function POST(req, res) {
     ImageUrl,
     optionType,
     marks,
-    question
+    question,
   } = await req.json();
   try {
     console.log(
@@ -99,7 +99,7 @@ export async function POST(req, res) {
       });
       const newQuestion = await db.analyticalWritingQuestion.create({
         data: {
-          testId,
+          testId: "66215457c2573476a4b33f99",
           typeId,
           subject,
           questionText,
@@ -107,7 +107,7 @@ export async function POST(req, res) {
           questionText,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           prompt,
         },
       });
@@ -122,7 +122,7 @@ export async function POST(req, res) {
       });
       const newQuestion = await db.readingComprehensionQuestion.create({
         data: {
-          testId,
+          testId: "66215457c2573476a4b33f99",
           typeId,
           subject,
           questionText,
@@ -134,16 +134,21 @@ export async function POST(req, res) {
           highlighted,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           paragraph,
           highlightedSentence,
         },
       });
     }
-    if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "MultipleAnswerQuestion" || questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "TextCompletion") {
+    if (
+      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
+        "MultipleAnswerQuestion" ||
+      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
+        "TextCompletion"
+    ) {
       const newQuestion = await db.multipleAnswerQuestion.create({
         data: {
-          testId,
+          testId: "66215457c2573476a4b33f99",
           typeId,
           subject,
           questionText,
@@ -152,20 +157,25 @@ export async function POST(req, res) {
           blankType,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           numberOfBlanks,
           blankOptions,
-          numerator:parseInt(numerator),
-          denominator:parseInt(denominator),
+          numerator: parseInt(numerator),
+          denominator: parseInt(denominator),
           units,
-          correctNumeric: parseInt(correctNumeric)
+          correctNumeric: parseInt(correctNumeric),
         },
       });
     }
-    if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "DataInterpretation" || questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "TextCompletion") {
+    if (
+      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
+        "DataInterpretation" ||
+      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
+        "TextCompletion"
+    ) {
       const newQuestion = await db.DataInterpretationQuestion.create({
         data: {
-          testId,
+          testId: "66215457c2573476a4b33f99",
           typeId,
           subject,
           questionText,
@@ -174,13 +184,13 @@ export async function POST(req, res) {
           optionType,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           images: ImageUrl,
-          numerator:parseInt(numerator),
-          denominator:parseInt(denominator),
+          numerator: parseInt(numerator),
+          denominator: parseInt(denominator),
           units,
           correctNumeric: parseInt(correctNumeric),
-          question
+          question,
         },
       });
     }
@@ -188,7 +198,7 @@ export async function POST(req, res) {
       console.log(ImageUrl[0]);
       const newQuestion = await db.multipleChoiceQuestion.create({
         data: {
-          testId,
+          testId: "66215457c2573476a4b33f99",
           typeId,
           subject,
           questionText,
@@ -197,9 +207,9 @@ export async function POST(req, res) {
           correctAnswer,
           image,
           section,
-          ImageUrl : ImageUrl[0],
+          ImageUrl: ImageUrl[0],
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
         },
       });
     }
@@ -209,7 +219,7 @@ export async function POST(req, res) {
     ) {
       const newQuestion = await db.quantitativeQuestion.create({
         data: {
-          testId,
+          testId: "66215457c2573476a4b33f99",
           typeId,
           subject,
           questionText,
@@ -218,12 +228,12 @@ export async function POST(req, res) {
           correctAnswer,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           Quantity1,
           Quantity2,
           image,
           ImageUrl1: ImageUrl[0],
-          ImageUrl2: ImageUrl[1]
+          ImageUrl2: ImageUrl[1],
         },
       });
     }
@@ -233,5 +243,115 @@ export async function POST(req, res) {
   } catch (error) {
     console.log(error);
     return new NextResponse(500, { error: "Could not create question" });
+  }
+}
+
+export async function PUT(req, res) {
+  const { testId, subject, section, selectedQuestions } = await req.json();
+  console.log(testId, subject, selectedQuestions);
+
+  try {
+    for (const { id, typeId } of selectedQuestions) {
+      const questionType = await db.questionType.findUnique({
+        where: {
+          id: typeId,
+        },
+      });
+
+      if (!questionType) {
+        console.error(`Question type with ID ${typeId} not found.`);
+        continue;
+      }
+
+      switch (questionType.type) {
+        case "AnalyticalWriting":
+          await db.analyticalWritingQuestion.update({
+            where: {
+              id: id,
+            },
+            data: {
+              testId,
+              subject,
+              section,
+            },
+          });
+          break;
+
+        case "Reading Comprehension":
+          await db.readingComprehensionQuestion.update({
+            where: {
+              id: id,
+            },
+            data: {
+              testId,
+              subject,
+              section,
+            },
+          });
+          break;
+
+        case "MultipleAnswerQuestion":
+          await db.multipleAnswerQuestion.update({
+            where: {
+              id: id,
+            },
+            data: {
+              testId,
+              subject,
+              section,
+            },
+          });
+          break;
+
+        case "DataInterpretation":
+          await db.DataInterpretationQuestion.update({
+            where: {
+              id: id,
+            },
+            data: {
+              testId,
+              subject,
+              section,
+            },
+          });
+          break;
+
+        case "MCQ":
+          await db.multipleChoiceQuestion.update({
+            where: {
+              id: id,
+            },
+            data: {
+              testId,
+              subject,
+              section,
+            },
+          });
+          break;
+
+        case "Quantitative":
+          await db.quantitativeQuestion.update({
+            where: {
+              id: id,
+            },
+            data: {
+              testId,
+              subject,
+              section,
+            },
+          });
+          break;
+
+        default:
+          console.error(`Unsupported question type: ${question.type}`);
+      }
+    }
+
+    return new NextResponse(200, {
+      message: "Questions updated successfully.",
+    });
+  } catch (error) {
+    console.error("Error updating questions:", error);
+    return new NextResponse(500, { error: "Could not update questions." });
   }
 }

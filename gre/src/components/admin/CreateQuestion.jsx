@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CreateQuestionForm from './QuestionForm';
 import axios from 'axios';
 
-const CreateQuestion = ({question}) => {
+const CreateQuestion = ({question, fetchQuestions}) => {
     const [types, setTypes] = useState([]);
     const [tests, setTests] = useState([]);
 
@@ -23,7 +23,7 @@ const CreateQuestion = ({question}) => {
     }, []);
 
     return <div className='h-full'>
-        <CreateQuestionForm questionTypes={types} tests={tests} question={question} />
+        <CreateQuestionForm questionTypes={types} tests={tests} question={question} fetchQuestions={fetchQuestions} />
     </div>
 }
 

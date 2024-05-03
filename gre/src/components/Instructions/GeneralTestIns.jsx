@@ -4,34 +4,37 @@ import React, { useEffect, useState } from 'react'
 import SectionWiseQuestions from '../Questions/SectionWiseQuestions';
 import { useCurrentTest } from '@/providers/CurrentTestDetails';
 import { useCurrentQuestion } from '@/providers/CurrentQuestionContext';
+import axios from 'axios';
 
 const GeneralTestIns = ({ sessionId }) => {
     const router = useRouter();
     const { currentSession } = useCurrentSession();
     const [sections, setSections] = useState([]);
-    const [testSession, setTestSession] = useState([]);
+    const [test, setTest] = useState([]);
     const [next, setNext] = useState(false);
 
     const { setInstructions, instructions } = useCurrentQuestion();
 
-    /* useEffect(() => {
-        const fetchQuestions = async () => {
-            const { sections, testSession } = await axios.get(`/api/sections-wise-questions/${sessionId}`);
-            console.log(sections, testSession)
+    useEffect(() => {
+        const fetchTest = async () => {
+            const response = await axios.get(`/api/test/${currentSession?.test?.id}`)
 
-            setSections(sections)
-            setTestSession(testSession);
+            setTest(response?.data?.Test);
+            console.log(response?.data?.Test)
         }
 
-        fetchQuestions()
-    }, []) */
+        fetchTest()
+        router.prefetch(`/mock-tests/${sessionId}`)
+    }, [])
+
     const handleNextInsrtruction = () => {
         /* console.log('cicked')
         setInstructions(instructions + 1) */
+
         router.push(`/mock-tests/${sessionId}`)
     }
 
-    if (instructions === 5) {
+    if (instructions === 5 && !test?.overallInstructions) {
         return (
             <div className="max-w-md mx-auto p-6 border border-gray-300 rounded-md bg-gray-100 text-sm">
                 <h2 className="text-lg font-bold mb-4">General Test Information</h2>
@@ -51,6 +54,13 @@ const GeneralTestIns = ({ sessionId }) => {
                 </button>
             </div>
         )
+    } else {
+        return <div>
+            <div dangerouslySetInnerHTML={{ __html: test?.overallInstructions }} className="flex flex-col justify-center items-center max-w-full overflow-clip" />
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleNextInsrtruction}>
+                Continue
+            </button>
+        </div>
     }
 }
 

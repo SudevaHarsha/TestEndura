@@ -12,11 +12,11 @@ const TimerClock = ({ TestDuration, test, testSession }) => {
     const [seconds, setSeconds] = useState(null);
 
     const { currentSection, currentQuestion } = useCurrentQuestion();
-    const {currentSession} = useCurrentSession();
+    const { currentSession } = useCurrentSession();
 
-/*     const testSession = currentSession;
-
-    console.log(currentSession); */
+    /*     const testSession = currentSession;
+    
+        console.log(currentSession); */
 
     const date = new Date();
     date.setHours(23, 37, 0, 0);
@@ -54,7 +54,8 @@ const TimerClock = ({ TestDuration, test, testSession }) => {
 
         // Get the duration of the current section
         const index = test.sections.indexOf(currentSection);
-        const sectionDuration = sections[index];
+        const sectionDuration = sections[Math.floor(index / 2)];
+        console.log(index / 2);
         /* sectionEndTime = new Date(sectionDurationString); */
 
         // Calculate the end time of the current section

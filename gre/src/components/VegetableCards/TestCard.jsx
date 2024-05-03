@@ -7,8 +7,9 @@ import { GifPlayer } from './GifController';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useCurrentTest } from '@/providers/CurrentTestDetails';
 
-const TestCard = ({ test, index }) => {
+const TestCard = ({ test, index, handleClick }) => {
 
   console.log(test);
 
@@ -26,16 +27,21 @@ const TestCard = ({ test, index }) => {
 
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
+  const { setCurrentTestSection, currentTestSection, currentTestCategory } = useCurrentTest();
   /*   const gifRef = useRef(null); */
 
   console.log(isHovered);
 
-  const handleClick = () => {
-    router.push(`/mock-tests/create-testsession/${test?.id}`)
-  }
+  /* const handleClick = () => {
+    currentTestCategory && !currentTestSection && router.push(`/mock-tests/create-testsession/${test?.id}`)
+    if (currentTestSection) { 
+      console.log('clicked on section');
+      setCurrentTestSection(test) 
+    }
+  } */
 
   return <>
-    <div className={`w-72 h-72 rounded-lg p-6 flex flex-col justify-between text-white ${vegetables[index].color} shadow-lg mx-4 mb-8 overflow-hidden transition-all duration-300 transform hover:scale-105 hover:translate-y-[-15px] hover:translate-x-[-5px] hover:shadow-2xl hover:shadow-black/60`} onClick={handleClick}>
+    <div className={`w-72 h-72 rounded-lg p-6 flex flex-col justify-between text-white ${vegetables[index].color} shadow-lg mx-4 mb-8 overflow-hidden transition-all duration-300 transform hover:scale-105 hover:translate-y-[-15px] hover:translate-x-[-5px] hover:shadow-2xl hover:shadow-black/60`} onClick={(e) => handleClick(e,test)}>
       <div>
         <h2 className="text-2xl font-bold">{test.name}</h2>
         <div className="flex items-center mt-2">

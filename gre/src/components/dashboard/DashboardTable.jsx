@@ -4,28 +4,34 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useCurrentQuestion } from '@/providers/CurrentQuestionContext';
 import { Button } from '../ui/button';
+import CustomDropdown from './CustomDropdown';
 
-const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId, setTestId }) => {
+const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId, setTestId, questions, filteredQuestions, fetchQuestions }) => {
 
-    const [questions, setQuestions] = useState([]);
     const [types, setTypes] = useState([]);
     const [tests, setTests] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState();
-    
-    const [filteredQuestions, setFilteredQuestions] = useState([]);
+    const [selectedUsers, setSelectedUsers] = useState([]);
+    const [selectedTests, setSelectedTests] = useState([]);
 
     const { setEdited } = useCurrentQuestion();
+
+    const fetchQuestionTypes = async () => {
+        const types = await axios.get(`/api/find-type?timestamp=${new Date().getTime()}`);
+        setTypes(types.data.questionTypes);
+    }
+
+    const fetchTests = async () => {
+        const tests = await axios.get(`/api/find-test?timestamp=${new Date().getTime()}`);
+        setTests(tests.data.tests);
+    }
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("/api/all-questions");
-                const types = await axios.get("/api/find-type");
-                const tests = await axios.get("/api/find-test");
-                setQuestions(response.data.allQuestions);
-                setFilteredQuestions(response.data.allQuestions);
-                setTypes(types.data.questionTypes);
-                setTests(tests.data.tests);
+                fetchQuestions();
+                fetchQuestionTypes();
+                fetchTests();
                 console.log("Dashboard", response.data.allQuestions);
             } catch (error) {
                 console.error("Error fetching questions:", error);
@@ -57,6 +63,7 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
         setEdited(true);
 
         console.log("set");
+        fetchQuestions();
     }
 
     const handleTypeFilterChange = (event) => {
@@ -105,6 +112,15 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
         }
     }
 
+    const handleCheckboxChange = (e, { id }) => {
+        const isChecked = e.target.checked;
+        if (isChecked) {
+            setSelectedUsers(prevState => [...prevState, id]);
+        } else {
+            setSelectedUsers(prevState => prevState.filter(item => !(item === id)));
+        }
+    };
+
     const DashboardHeadings = ['Id', 'test', 'Subject', 'Question', 'Topic', 'Type', 'Points'];
     const UserHeadings = ['Id', 'User', 'Assigned', 'Role'];
     const QuestionTypesHeadings = ['Id', 'Type'];
@@ -116,7 +132,35 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
         setNavState('newStudent')
     }
 
+    const handleChange = (event) => {
+        const { value } = event.target;
+        const selectedTestId = value;
 
+        // Check if the selected test ID already exists in the array
+        if (selectedTests.includes(selectedTestId)) {
+            // If it exists, remove it
+            setSelectedTests([
+                ...selectedTests.filter((test) => test.id === selectedTestId)
+            ]);
+        } else {
+            // If it doesn't exist, add it
+            setSelectedTests([
+                ...selectedTests,
+                selectedTestId,
+            ]);
+        }
+    };
+
+    console.log(selectedTests)
+
+    const handleAssignTest = async () => {
+        const response = await axios.put('/api/assign-tests', { assignedTests: selectedTests, selectedUsers })
+    }
+
+    const handleQuestionDelete = async (question) => {
+        await axios.delete(`/api/questions/${question.id}/${question.typeId}`)
+        fetchQuestions()
+    }
 
     return (
         <div className='w-[85%]'>
@@ -234,8 +278,13 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
 
             <div className="mt-8"></div>
 
-            {navState === 'users' && <div className='mt-5 mb-5'>
+            {navState === 'users' && <div className='mt-5 mb-5 flex justify-between'>
                 <Button className="h-11 text-white bg-strong hover:bg-strong/90 px-3 my-auto text-center" onClick={handleCreateUser}>Create User</Button>
+
+                <div className='flex gap-5'>
+                    <CustomDropdown tests={tests} handleChange={handleChange} selectedTests={selectedTests} />
+                    <Button className="h-11 text-white bg-strong hover:bg-strong/90 px-3 my-auto text-center" onClick={handleAssignTest}>Assign Test</Button>
+                </div>
             </div>}
 
             <div className="flex flex-col mt-8  h-[73vh] overflow-hidden sm:rounded-md ">
@@ -346,7 +395,7 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                             </td>
                                             <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                                 <div>
-                                                    {types.find((type) => type.id === question.typeId).type}
+                                                    {types.find((type) => type.id === question.typeId)?.type}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -376,7 +425,9 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                             <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium cursor-pointer">
                                                 <div
                                                     className="text-red-600 hover:text-red-900"
-                                                    onClick={async () => await axios.delete(`/api/questions/${question.id}/${question.typeId}`)}
+                                                    onClick={
+                                                        handleQuestionDelete(question)
+                                                    }
                                                 >
                                                     Delete
                                                 </div>
@@ -386,7 +437,15 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                 }
                                 {
                                     navState === 'users' && users && users.map((user) => {
+                                        const isChecked = selectedUsers.some((item) => item === user.id);
                                         return <tr key={user.id}>
+                                            <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={isChecked}
+                                                    onChange={(e) => handleCheckboxChange(e, { id: user.id })}
+                                                />
+                                            </td>
                                             <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
                                                 {user.id}
                                             </td>
@@ -457,7 +516,10 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                             <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
                                                 <div
                                                     className="text-red-600 hover:text-red-900 cursor-pointer"
-                                                    onClick={async () => await axios.delete(`/api/question-type/${type.id}`)}
+                                                    onClick={async () => { 
+                                                        await axios.delete(`/api/question-type/${type.id}`);
+                                                        fetchQuestionTypes();
+                                                    }}
                                                 >
                                                     Delete
                                                 </div>
@@ -495,7 +557,10 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                             <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium cursor-pointer">
                                                 <div
                                                     className="text-red-600 hover:text-red-900"
-                                                    onClick={() => axios.delete(`/api/test/${test.id}`)}
+                                                    onClick={() => {
+                                                        axios.delete(`/api/test/${test.id}`);
+                                                        fetchTests();
+                                                    }}
                                                 >
                                                     Delete
                                                 </div>

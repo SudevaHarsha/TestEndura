@@ -1,9 +1,11 @@
 import React from 'react'
 import { Button } from '../ui/button';
+import QuestionsNav from '../Questions/QuestionsNav';
 
-const AnalyticalWritingIns = ({handleNextQuestion}) => {
+const AnalyticalWritingIns = ({ handleNextQuestion }) => {
 
-    return (
+    return <>
+        {/* <QuestionsNav /> */}
         <div className="bg-gray-100 p-6 rounded-sm shadow-md">
             <h2 className="text-xl font-semibold mb-4">Analytical Writing</h2>
             <p className="mb-4">
@@ -37,7 +39,7 @@ const AnalyticalWritingIns = ({handleNextQuestion}) => {
                 Continue
             </Button>
         </div>
-    )
+    </>
 }
 
 export default AnalyticalWritingIns

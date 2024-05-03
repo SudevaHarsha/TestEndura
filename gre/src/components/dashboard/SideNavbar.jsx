@@ -57,6 +57,7 @@ const SideNavbar = ({ users, setNavState, navState }) => {
         <div>
           <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'users' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('users')}>Users</div>
           <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'tests' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('tests')}>Tests</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'newTest' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('newTest')}>Make A Test</div>
           <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question types' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('question types')}>Question Types</div>
         </div>
         <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('question')}>Create Question</div>
@@ -76,8 +77,10 @@ const SideNavbar = ({ users, setNavState, navState }) => {
         <div>
           <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'users' ? 'bg-gray-300' : ''}`} onClick={()=> setNavState('users')}>Users</div>
           <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'tests' ? 'bg-gray-300' : ''}`} onClick={()=> setNavState('tests')}>Tests</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'newTest' ? 'bg-gray-300' : ''}`} onClick={()=> setNavState('newTest')}>Make A Test</div>
           <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question types' ? 'bg-gray-300' : ''}`} onClick={()=> setNavState('question types')}>Question Types</div>
         </div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'newSubject' ? 'bg-gray-300' : ''}`} onClick={()=>setNavState('newSubject')}>Create Subject</div>
         <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question' ? 'bg-gray-300' : ''}`} onClick={()=>setNavState('question')}>Create Question</div>
         <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'test' ? 'bg-gray-300' : ''}`} onClick={()=>setNavState('test')}>Create Test</div>
         <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'type' ? 'bg-gray-300' : ''}`} onClick={()=>setNavState('type')}>Create Question Type</div>

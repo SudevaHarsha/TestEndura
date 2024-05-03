@@ -11,7 +11,7 @@ const JoditEditor = dynamic(() => import("jodit-react"), {
   ssr: false,
 });
 
-const CreateQuestionForm = ({ questionTypes, tests, question }) => {
+const CreateQuestionForm = ({ questionTypes, tests, question, fetchQuestions }) => {
 /*   const JoditEditor = dynamic(() => import('jodit-react'), { ssr: false });
  */  const editor = useRef(null);
   const ref = useRef(null);
@@ -284,6 +284,7 @@ const CreateQuestionForm = ({ questionTypes, tests, question }) => {
         question: '',
         subject: '',
       });
+      fetchQuestions();
     } catch (error) {
       console.error('Error creating question:', error);
     }
@@ -292,7 +293,7 @@ const CreateQuestionForm = ({ questionTypes, tests, question }) => {
   return (
     <div className="mx-auto mt-8 p-4 bg-white shadow-md rounded-sm w-full">
       <h2 className="text-2xl font-bold mb-4">{edited ? "Edit" : "Create New"} Question</h2>
-      <label className="block mb-4">
+      {/* <label className="block mb-4">
         Test:
         <select
           name="testId"
@@ -307,9 +308,9 @@ const CreateQuestionForm = ({ questionTypes, tests, question }) => {
             </option>
           ))}
         </select>
-      </label>
+      </label> */}
 
-      <label className="block mb-4">
+      {/* <label className="block mb-4">
         Section:
         <select
           name="section"
@@ -327,7 +328,7 @@ const CreateQuestionForm = ({ questionTypes, tests, question }) => {
                 </option>
               ))}
         </select>
-      </label>
+      </label> */}
 
       <label className="block mb-4">
         Question Type:

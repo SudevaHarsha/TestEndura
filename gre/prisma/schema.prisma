@@ -32,11 +32,35 @@ model Profile {
   joiningDate    String?
   expiryDate     String?
   examDate       String?
+  assignedTests  String[]
 
   testSessions TestSession[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model TestCategory {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+
+  createdAt   DateTime?     @default(now())
+  updatedAt   DateTime?     @updatedAt
+  TestSection TestSection[]
+}
+
+model TestSection {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  categoryId     String  @db.ObjectId
+  gifUrl         String?
+  staticImageUrl String?
+
+  testCategory TestCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  Test      Test[]
 }
 
 model Test {
@@ -49,6 +73,11 @@ model Test {
   sections        String[]
   totalAttempts   Int?
 
+  testSectionId       String @db.ObjectId
+  overallInstructions String?
+
+  testSection TestSection @relation(fields: [testSectionId], references: [id], onDelete: Cascade)
+
   testSessions                  TestSession[]
   Questions                     Question[]
   multipleChoiceQuestions       MultipleChoiceQuestion[]
@@ -57,6 +86,14 @@ model Test {
   quantitativeQuestions         QuantitativeQuestion[]
   analyticalWritingQuestions    AnalyticalWritingQuestion[]
   dataInterpretationQuestions   DataInterpretationQuestion[]
+}
+
+model Subject {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model TestSession {
@@ -105,7 +142,7 @@ model Instructions {
 model ReadingComprehensionQuestion {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   typeId          String   @db.ObjectId
-  testId          String   @db.ObjectId
+  testId          String?  @db.ObjectId
   subject         String?
   correctAnswer   Int[]
   correctSentence String[]
@@ -121,15 +158,15 @@ model ReadingComprehensionQuestion {
   highlightedSentence String?
   option              Int?
 
-  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test         Test?        @relation(fields: [testId], references: [id], onDelete: Cascade)
   questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
 }
 
 model MultipleAnswerQuestion {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   typeId        String   @db.ObjectId
-  testId        String   @db.ObjectId
-  subject         String?
+  testId        String?  @db.ObjectId
+  subject       String?
   correctAnswer Int[]
   questionText  String
   options       String[]
@@ -145,15 +182,15 @@ model MultipleAnswerQuestion {
   units          String?
   correctNumeric Int?
 
-  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test         Test?        @relation(fields: [testId], references: [id], onDelete: Cascade)
   questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
 }
 
 model DataInterpretationQuestion {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   typeId        String   @db.ObjectId
-  testId        String   @db.ObjectId
-  subject         String?
+  testId        String?  @db.ObjectId
+  subject       String?
   correctAnswer Int[]
   questionText  String
   options       String[]
@@ -169,15 +206,15 @@ model DataInterpretationQuestion {
   question       String?
   images         String[]
 
-  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test         Test?        @relation(fields: [testId], references: [id], onDelete: Cascade)
   questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
 }
 
 model MultipleChoiceQuestion {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   typeId        String   @db.ObjectId
-  testId        String   @db.ObjectId
-  subject         String?
+  testId        String?  @db.ObjectId
+  subject       String?
   correctAnswer Int[]
   questionText  String
   options       String[]
@@ -189,15 +226,15 @@ model MultipleChoiceQuestion {
   ImageUrl String?
   option   Int?
 
-  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test         Test?        @relation(fields: [testId], references: [id], onDelete: Cascade)
   questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
 }
 
 model QuantitativeQuestion {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   typeId        String   @db.ObjectId
-  testId        String   @db.ObjectId
-  subject         String?
+  testId        String?  @db.ObjectId
+  subject       String?
   correctAnswer Int[]
   questionText  String
   options       String[]
@@ -212,15 +249,15 @@ model QuantitativeQuestion {
   ImageUrl2 String?
   option    Int?
 
-  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test         Test?        @relation(fields: [testId], references: [id], onDelete: Cascade)
   questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
 }
 
 model AnalyticalWritingQuestion {
   id            String  @id @default(auto()) @map("_id") @db.ObjectId
   typeId        String  @db.ObjectId
-  testId        String  @db.ObjectId
-  subject         String?
+  testId        String? @db.ObjectId
+  subject       String?
   correctAnswer Int[]
   questionText  String
   section       String
@@ -229,7 +266,7 @@ model AnalyticalWritingQuestion {
 
   prompt String
 
-  test         Test         @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test         Test?        @relation(fields: [testId], references: [id], onDelete: Cascade)
   questionType QuestionType @relation(fields: [typeId], references: [id], onDelete: Cascade)
 }
 
@@ -237,7 +274,7 @@ model Question {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   typeId        String   @db.ObjectId
   testId        String   @db.ObjectId
-  subject         String?
+  subject       String?
   questionText  String
   options       String[]
   correctAnswer Int[]

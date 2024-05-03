@@ -68,9 +68,11 @@ export async function POST(req, res) {
         zipCode: parseInt(zipCode),
         phone: parseInt(phone),
         center,
+        assignedTests: [],
         joiningDate,
         expiryDate,
         examDate,
+
       },
     });
 

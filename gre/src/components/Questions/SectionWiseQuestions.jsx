@@ -42,7 +42,7 @@ const SectionWiseQuestions = ({ test, testSession, questions }) => {
     console.log(previousSectionsLengths);
     /*     setCurrentSession(testSession);
      */   /*  const cquestions = questions[currentSection];
-     console.log(cquestions); */
+console.log(cquestions); */
     /*     const handleNextSection = () => {
             const sectionKeys = Object.keys(questions);
             const currentIndex = sectionKeys.indexOf(currentSection);
@@ -70,15 +70,30 @@ const SectionWiseQuestions = ({ test, testSession, questions }) => {
 
     if (currentSection === 'AnalyticalWritingIns') {
         console.log(currentSection)
-        return <AnalyticalWritingIns handleNextQuestion={handleNextQuestion} />;
+        return <>
+            <QuestionsNav questionLength={questions.length} testSession={testSession} test={test} NextQuestion={handleNextQuestion} />
+            <AnalyticalWritingIns handleNextQuestion={handleNextQuestion} />
+        </>;
     } else if (currentSection === 'VerbalReasoning1Ins') {
-        return <VerbalReasoning1Ins handleNextQuestion={handleNextQuestion} />;
+        return <>
+            <QuestionsNav questionLength={questions.length} testSession={testSession} test={test} NextQuestion={handleNextQuestion} />
+            <VerbalReasoning1Ins handleNextQuestion={handleNextQuestion} />;
+        </>
     } else if (currentSection === 'VerbalReasoning2Ins') {
-        return <VerbalReasoning2Ins handleNextQuestion={handleNextQuestion} />;
+        return <>
+            <QuestionsNav questionLength={questions.length} testSession={testSession} test={test} NextQuestion={handleNextQuestion} />
+            <VerbalReasoning2Ins handleNextQuestion={handleNextQuestion} />;
+        </>
     } else if (currentSection === 'QuantativeReasoning1Ins') {
-        return <QuantativeReasoning1Ins handleNextQuestion={handleNextQuestion} />;
+        return <>
+            <QuestionsNav questionLength={questions.length} testSession={testSession} test={test} NextQuestion={handleNextQuestion} />
+            <QuantativeReasoning1Ins handleNextQuestion={handleNextQuestion} />;
+        </>
     } else if (currentSection === 'QuantativeReasoning2Ins') {
-        return <QuantativeReasoning2Ins handleNextQuestion={handleNextQuestion} />;
+        return <>
+            <QuestionsNav questionLength={questions.length} testSession={testSession} test={test} NextQuestion={handleNextQuestion} />
+            <QuantativeReasoning2Ins handleNextQuestion={handleNextQuestion} />;
+        </>
     } else if (!currentSection.endsWith('Ins')) {
         return (
             <>

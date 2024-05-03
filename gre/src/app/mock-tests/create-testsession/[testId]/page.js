@@ -47,6 +47,10 @@ const page = async (testId) => {
     return <AttemptsExceeded />
   }
 
+  if(!profile.assignedTests.includes(test.id)) {
+    return <div>You Are Not Allowed To Take This Test</div>
+  }
+
   const testSession = await db.testSession.create({
     data: {
       profileId: profile.id, // Replace with actual user ID

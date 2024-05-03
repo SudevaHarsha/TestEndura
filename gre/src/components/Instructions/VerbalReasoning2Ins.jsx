@@ -1,9 +1,11 @@
 import React from 'react'
 import { Button } from '../ui/button';
+import QuestionsNav from '../Questions/QuestionsNav';
 
-const VerbalReasoning2Ins = ({handleNextQuestion}) => {
+const VerbalReasoning2Ins = ({ handleNextQuestion }) => {
 
-    return (
+    return <>
+        {/* <QuestionsNav /> */}
         <div className="bg-gray-100 p-6 rounded-sm shadow-md">
             <h2 className="text-xl font-semibold mb-4">Verbal Reasoning, 12 Questions 21 minutes (standard time)</h2>
             <p>
@@ -24,7 +26,7 @@ const VerbalReasoning2Ins = ({handleNextQuestion}) => {
                 Continue
             </Button>
         </div>
-    )
+    </>
 }
 
 export default VerbalReasoning2Ins
