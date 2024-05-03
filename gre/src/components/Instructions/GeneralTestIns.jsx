@@ -24,7 +24,7 @@ const GeneralTestIns = ({ sessionId }) => {
         }
 
         fetchTest()
-        router.prefetch(`/mock-tests/${sessionId}`)
+        /* router.prefetch(`/mock-tests/${sessionId}`) */
     }, [])
 
     const handleNextInsrtruction = () => {

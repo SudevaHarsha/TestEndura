@@ -14,8 +14,7 @@ const TestCategories = ({ testCategories, tests }) => {
     const [actualSections, setActualSections] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(testCategories[0].id);
 
-    const [testSections, setTestSections] = useState([]);
-    ;
+    const [testSections, setTestSections] = useState([]);;
     const { setCurrentTestCategory, setCurrentTest, setCurrentTestSection, currentTestCategory, currentTestSection, currentTest } = useCurrentTest();
 
 
