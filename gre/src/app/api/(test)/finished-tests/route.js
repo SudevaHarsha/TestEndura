@@ -53,9 +53,9 @@ export async function GET(req, res) {
         updatedAt: 'desc', // Sort by createdAt field in descending order
       },
     });
-    if (!results || results.length === 0) {
+    /* if (!results || results.length === 0) {
       return NextResponse.error(new Error('results not found'), { status: 404 });
-    }
+    } */
 
     console.log('results fetched:', results);
     return NextResponse.json({ results });

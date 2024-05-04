@@ -350,7 +350,7 @@ const ResultsPage = () => {
         {/* Default Test Results */}
         {
           !resultCard && !selectedResult && <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p:0 w-full">
-            {resultSessions.filter(resultSession => resultSession.test.id === testId).map(result => (
+            {resultSessions.length === 0 ? `No Results Found` :resultSessions.filter(resultSession => resultSession.test.id === testId).map(result => (
               <div key={result.id} className="bg-slate-100 p-6 rounded-lg shadow-md cursor-pointer sm:transition sm:duration-300 sm:ease-in-out sm:transform sm:hover:scale-105 sm:hover:shadow-xl sm:mx-0 mx-1">
                 <h2 className="text-2xl font-bold mb-4 text-gray-800">{result.test.name}</h2>
                 <p className="text-gray-600 mb-2">Result ID: {result.id}</p>
