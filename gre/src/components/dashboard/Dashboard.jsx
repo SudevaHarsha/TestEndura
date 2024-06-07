@@ -31,7 +31,7 @@ const Dashboard = ({ users }) => {
     const {edited,setEdited} = useCurrentQuestion();
 
     const fetchQuestions = async ()=> {
-        const response = await axios.get("/api/all-questions");
+        const response = await axios.get(`/api/all-questions?timestamp=${new Date().getTime()}`);
         setQuestions(response.data.allQuestions);
         setFilteredQuestions(response.data.allQuestions);
     }

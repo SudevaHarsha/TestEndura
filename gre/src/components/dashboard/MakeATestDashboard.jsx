@@ -178,7 +178,6 @@ const MakeATestDashboard = () => {
                         <option value="">Select Section</option>
                         <option value="Algebra">Algebra</option>
                         <option value="Verbal">Verbal</option>
-                        <option value="Geometry">Geometry</option>
                     </select>
                 </label>
                 <label className="block mb-4">
