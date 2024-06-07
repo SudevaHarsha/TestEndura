@@ -51,7 +51,7 @@ const Dashboard = ({ users }) => {
         };
 
         // Call fetchData only if 'edited' is true and questionId and typeId are not null
-        if (edited && questionId !== null && typeId !== null) {
+        if (edited && questionId !== null && typeId !== null && testId) {
             fetchData();
         }
     }, [edited, questionId, typeId]);

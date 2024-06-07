@@ -1,10 +1,7 @@
 import { db } from '@/lib/db';
-import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
-
-export async function GET(req, res) {
-
+export async function GET(req) {
   try {
     const Questions = await db.$transaction([
       db.multipleChoiceQuestion.findMany(),
@@ -14,7 +11,7 @@ export async function GET(req, res) {
       db.analyticalWritingQuestion.findMany(),
       db.dataInterpretationQuestion.findMany(),
     ]);
-    
+
     const allQuestions = [
       ...Questions[0],
       ...Questions[1],
@@ -24,10 +21,16 @@ export async function GET(req, res) {
       ...Questions[5],
     ];
 
+    const headers = new Headers({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Expires': '0',
+      'Pragma': 'no-cache',
+    });
+
     console.log('Questions divided into sections:', allQuestions);
-    return NextResponse.json({ allQuestions });
+    return new NextResponse(JSON.stringify({ allQuestions }), { headers });
   } catch (error) {
     console.error('Error fetching questions:', error);
-    return NextResponse.error(error, { status: 500 });
+    return new NextResponse(JSON.stringify({ error: 'Failed to fetch questions' }), { status: 500 });
   }
 }
