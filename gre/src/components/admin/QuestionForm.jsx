@@ -57,6 +57,7 @@ const CreateQuestionForm = ({ questionTypes, tests, question, fetchQuestions }) 
       setFormData({
         testId: question.testId || '',
         typeId: question.typeId || '',
+        subject: question?.subject,
         questionText: question?.questionText || '',
         question: question?.question || '',
         prompt: question?.prompt || '',

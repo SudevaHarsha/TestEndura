@@ -425,9 +425,7 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                             <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium cursor-pointer">
                                                 <div
                                                     className="text-red-600 hover:text-red-900"
-                                                    onClick={
-                                                        handleQuestionDelete(question)
-                                                    }
+                                                    onClick={()=>handleQuestionDelete(question)}
                                                 >
                                                     Delete
                                                 </div>

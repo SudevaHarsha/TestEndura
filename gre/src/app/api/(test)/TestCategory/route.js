@@ -4,8 +4,7 @@ const { NextResponse } = require("next/server");
 
 export async function POST(req, res) {
   try {
-    const { name } =
-      await req.json();
+    const { name } = await req.json();
 
     const newTest = await db.testCategory.create({
       data: {
@@ -22,9 +21,8 @@ export async function POST(req, res) {
 
 export async function GET(req, res) {
   try {
-
     const categories = await db.testCategory.findMany();
-
+    console.log("backendc",categories);
     return NextResponse.json({ categories });
   } catch (error) {
     console.error("Error creating test:", error);
