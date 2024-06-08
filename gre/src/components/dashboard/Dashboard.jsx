@@ -31,15 +31,15 @@ const Dashboard = ({ users }) => {
     const {edited,setEdited} = useCurrentQuestion();
 
     const fetchQuestions = async ()=> {
-        const response = await axios.get(`/api/all-questions?timestamp=${new Date().getTime()}`, {
+        const response = await fetch('/api/all-questions', {
             headers: {
-                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-                'Pragma': 'no-cache',
-                'Expires': '0'
-            }
-        });
-        setQuestions(response.data.allQuestions);
-        setFilteredQuestions(response.data.allQuestions);
+              'Cache-Control': 'no-store',
+              'revalidate':600,
+            },
+          });
+          const data = await response.json();
+        setQuestions(data.allQuestions);
+        setFilteredQuestions(data.allQuestions);
     }
 
     useEffect(() => {
