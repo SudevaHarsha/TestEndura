@@ -6,7 +6,7 @@ import { useCurrentQuestion } from '@/providers/CurrentQuestionContext';
 import { Button } from '../ui/button';
 import CustomDropdown from './CustomDropdown';
 
-const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId, setTestId, questions, filteredQuestions, fetchQuestions }) => {
+const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId, setTestId, questions, filteredQuestions, fetchQuestions, setFilteredQuestions }) => {
 
     const [types, setTypes] = useState([]);
     const [tests, setTests] = useState([]);
@@ -22,8 +22,14 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
     }
 
     const fetchTests = async () => {
-        const tests = await axios.get(`/api/find-test?timestamp=${new Date().getTime()}`);
-        setTests(tests.data.tests);
+        const response = await fetch('/api/find-test', {
+            headers: {
+              'Cache-Control': 'no-store',
+              'revalidate':600,
+            },
+          });
+          const data = await response.json();
+        setTests(data.tests);
     }
 
     useEffect(() => {

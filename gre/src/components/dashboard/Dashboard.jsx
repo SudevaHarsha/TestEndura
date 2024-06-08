@@ -85,7 +85,7 @@ const Dashboard = ({ users }) => {
         <div className='flex w-full h-full'>
             <SideNavbar users={users} setNavState={setNavState} navState={navState} />
             {(navState === 'dashboard' || navState === 'users' || navState === 'tests' || navState === 'question types') && (
-                <DashboardTable users={users} setNavState={setNavState} navState={navState} setTypeId={setTypeId} setQuestionId={setQuestionId} setTestId={setTestId} fetchQuestions={fetchQuestions} filteredQuestions={filteredQuestions} questions={questions} />
+                <DashboardTable users={users} setNavState={setNavState} navState={navState} setTypeId={setTypeId} setQuestionId={setQuestionId} setTestId={setTestId} fetchQuestions={fetchQuestions} filteredQuestions={filteredQuestions} questions={questions} setFilteredQuestions={setFilteredQuestions} />
             )}
             {(navState === 'test' || (edited && navState === 'test')) && (
                 <div className='w-full mr-3'>
