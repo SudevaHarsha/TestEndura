@@ -46,7 +46,7 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
         setCategories(data.categories);
     }
     const fetchSections = async () => {
-        const response = await fetch('/api/allTestSections', {
+        const response = await fetch('/api/TestSection', {
             headers: {
               'Cache-Control': 'no-store',
               'revalidate':600,
