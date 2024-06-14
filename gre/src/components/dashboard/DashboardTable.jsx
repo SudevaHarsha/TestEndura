@@ -21,8 +21,14 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
     const {showToast} = useToast();
 
     const fetchQuestionTypes = async () => {
-        const types = await axios.get(`/api/find-type?timestamp=${new Date().getTime()}`);
-        setTypes(types.data.questionTypes);
+        const response = await fetch(`/api/find-type?timestamp=${new Date().getTime()}`, {
+            headers: {
+              'Cache-Control': 'no-store',
+              'revalidate':600,
+            },
+          });
+          const data = await response.json();
+        setTypes(data.questionTypes);
     }
 
     const fetchTests = async () => {

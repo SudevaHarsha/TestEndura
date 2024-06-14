@@ -33,6 +33,7 @@ const QuestionTypeForm = ({ typeId }) => {
       if (edited) {
         const response = await axios.patch(`/api/question-type/${typeId}`, { type });
         showToast('Question type updated sucessfylly', 'success');
+        return
       }
 
       const response = await axios.post('/api/question-type', { type });
