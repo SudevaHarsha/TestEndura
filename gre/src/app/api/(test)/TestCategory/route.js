@@ -19,6 +19,8 @@ export async function POST(req, res) {
   }
 }
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 600;
 export async function GET(req, res) {
   try {
     const categories = await db.testCategory.findMany();
@@ -29,3 +31,14 @@ export async function GET(req, res) {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
+
+/* export async function DELETE(req, res) {
+  try {
+    const categories = await db.testCategory.findById();
+    console.log("backendc",categories);
+    return NextResponse.json({ categories });
+  } catch (error) {
+    console.error("Error creating test:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+} */

@@ -1,20 +1,44 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useCurrentQuestion } from '@/providers/CurrentQuestionContext';
+import { useToast } from '@/providers/ToastContext';
 
-const QuestionTypeForm = () => {
+const QuestionTypeForm = ({ typeId }) => {
+
   const [type, setType] = useState('');
+  const { edited } = useCurrentQuestion();
+  const { showToast } = useToast();
 
   const handleChange = (e) => {
     setType(e.target.value);
   };
 
+  useEffect(() => {
+    const fetchQuestionType = async () => {
+      if (edited) {
+        const type = await axios.get(`/api/question-type/${typeId}`);
+        setType(type.data.type.type);
+      }
+    }
+    if(edited) {
+      fetchQuestionType();
+    }
+  }, [])
+
   const handleCreateQuestionType = async () => {
     try {
+
+      if (edited) {
+        const response = await axios.patch(`/api/question-type/${typeId}`, { type });
+        showToast('Question type updated sucessfylly', 'success');
+      }
+
       const response = await axios.post('/api/question-type', { type });
       setType(''); // Reset type after successful creation
       // Handle success
+      showToast("Question type created sucessfully", 'success')
     } catch (error) {
       console.error('Error creating question type:', error);
       // Handle error
@@ -38,12 +62,12 @@ const QuestionTypeForm = () => {
         <option value="Blank">Blank</option>
       </select>
  */}
-      <input type='text' name='type' value={type} onChange={handleChange} className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md"/>
+      <input type='text' name='type' value={type} onChange={handleChange} className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md" />
       <button
         onClick={handleCreateQuestionType}
         className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
       >
-        Create Question Type
+        {edited ? "Edit" : "Create"} Question Type
       </button>
     </div>
   );

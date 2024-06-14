@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useCurrentQuestion } from '@/providers/CurrentQuestionContext';
 import { Button } from '../ui/button';
 import CustomDropdown from './CustomDropdown';
+import { useToast } from '@/providers/ToastContext';
 
 const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId, setTestId, questions, filteredQuestions, fetchQuestions, setFilteredQuestions }) => {
 
@@ -13,8 +14,11 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
     const [selectedFilter, setSelectedFilter] = useState();
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [selectedTests, setSelectedTests] = useState([]);
+    const [sections, setSections] = useState([]);
+    const [categories, setCategories] = useState([]);
 
     const { setEdited } = useCurrentQuestion();
+    const {showToast} = useToast();
 
     const fetchQuestionTypes = async () => {
         const types = await axios.get(`/api/find-type?timestamp=${new Date().getTime()}`);
@@ -31,6 +35,26 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
           const data = await response.json();
         setTests(data.tests);
     }
+    const fetchCategories = async () => {
+        const response = await fetch('/api/TestCategory', {
+            headers: {
+              'Cache-Control': 'no-store',
+              'revalidate':600,
+            },
+          });
+          const data = await response.json();
+        setCategories(data.categories);
+    }
+    const fetchSections = async () => {
+        const response = await fetch('/api/allTestSections', {
+            headers: {
+              'Cache-Control': 'no-store',
+              'revalidate':600,
+            },
+          });
+          const data = await response.json();
+        setSections(data.testSections);
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,6 +62,8 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                 fetchQuestions();
                 fetchQuestionTypes();
                 fetchTests();
+                fetchSections();
+                fetchCategories();
                 console.log("Dashboard", response.data.allQuestions);
             } catch (error) {
                 console.error("Error fetching questions:", error);
@@ -70,6 +96,30 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
 
         console.log("set");
         fetchQuestions();
+    } 
+
+    const handleEditQuestionType = (typeId) => {
+        setTypeId(typeId);
+        setNavState('type');
+        setEdited(true);
+
+        fetchQuestionTypes();
+    } 
+
+    const handleSectionEdit = (sectionId) => {
+        setTestId(sectionId);
+        setNavState('sectionsEdit');
+        setEdited(true);
+
+        fetchSections();
+    }
+
+    const handleEditCategory = (categoryId) => {
+        setTestId(categoryId);
+        setNavState('categoryEdit');
+        setEdited(true);
+
+        fetchCategories();
     }
 
     const handleTypeFilterChange = (event) => {
@@ -97,8 +147,8 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
         }
     };
     let subjects = [];
-    subjects = questions.map((question) => question.subject);
-    const uniqueSubjects = subjects.reduce((accumulator, currentValue) => {
+    subjects = questions?.map((question) => question.subject);
+    const uniqueSubjects = subjects?.reduce((accumulator, currentValue) => {
         if (!accumulator.includes(currentValue)) {
             accumulator.push(currentValue);
         }
@@ -130,6 +180,8 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
     const DashboardHeadings = ['Id', 'test', 'Subject', 'Question', 'Topic', 'Type', 'Points'];
     const UserHeadings = ['Id', 'User', 'Assigned', 'Role'];
     const QuestionTypesHeadings = ['Id', 'Type'];
+    const TestSectionsHeadings = ['Id', 'section', 'category'];
+    const CategoryHeadings = ['Id','Name'];
     const TestHeadings = ['Id', 'Name', 'Description', 'Overall Duration', 'Sections'];
 
     console.log(types);
@@ -160,12 +212,14 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
     console.log(selectedTests)
 
     const handleAssignTest = async () => {
-        const response = await axios.put('/api/assign-tests', { assignedTests: selectedTests, selectedUsers })
+        const response = await axios.put('/api/assign-tests', { assignedTests: selectedTests, selectedUsers });
+        showToast('Test assignes sucessfully', 'error');
     }
 
     const handleQuestionDelete = async (question) => {
         await axios.delete(`/api/questions/${question.id}/${question.typeId}`)
         fetchQuestions()
+        showToast('Question deleted sucessfully', 'error');
     }
 
     return (
@@ -360,6 +414,20 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                             </th>
                                         })
                                     }
+                                    {navState === 'sections' &&
+                                        TestSectionsHeadings.map((heading) => {
+                                            return <th key={heading} className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                                {heading}
+                                            </th>
+                                        })
+                                    }
+                                    {navState === 'categories' &&
+                                        CategoryHeadings.map((heading) => {
+                                            return <th key={heading} className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                                                {heading}
+                                            </th>
+                                        })
+                                    }
                                     {navState === 'tests' &&
                                         TestHeadings.map((heading) => {
                                             return <th key={heading} className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
@@ -513,6 +581,7 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                             <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
                                                 <div
                                                     className="text-indigo-600 hover:text-indigo-900 cursor-pointer"
+                                                    onClick={()=> handleEditQuestionType(type.id)}
                                                 >
                                                     Edit
                                                 </div>
@@ -523,6 +592,73 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                                     onClick={async () => { 
                                                         await axios.delete(`/api/question-type/${type.id}`);
                                                         fetchQuestionTypes();
+                                                    }}
+                                                >
+                                                    Delete
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    })
+                                }
+                                {
+                                    navState === 'sections' && sections && sections.map((section) => {
+                                        return <tr key={section.id}>
+                                            <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                                {section.id}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">
+                                                {section.name}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">
+                                                {categories.find((category) => category.id === section.categoryId)?.name}
+                                            </td>
+
+                                            <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
+                                                <div
+                                                    className="text-indigo-600 hover:text-indigo-900 cursor-pointer"
+                                                    onClick={()=> handleSectionEdit(section.id)}
+                                                >
+                                                    Edit
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
+                                                <div
+                                                    className="text-red-600 hover:text-red-900 cursor-pointer"
+                                                    onClick={async () => { 
+                                                        await axios.delete(`/api/TestSection/${section.id}`);
+                                                        fetchSections();
+                                                    }}
+                                                >
+                                                    Delete
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    })
+                                }
+                                {
+                                    navState === 'categories' && categories && categories.map((category) => {
+                                        return <tr key={category.id}>
+                                            <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
+                                                {category.id}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm leading-5 text-gray-500">
+                                                {category.name}
+                                            </td>
+
+                                            <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
+                                                <div
+                                                    className="text-indigo-600 hover:text-indigo-900 cursor-pointer"
+                                                    onClick={()=>handleEditCategory(category.id)}
+                                                >
+                                                    Edit
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
+                                                <div
+                                                    className="text-red-600 hover:text-red-900 cursor-pointer"
+                                                    onClick={async () => { 
+                                                        await axios.delete(`/api/TestCategory/${category.id}`);
+                                                        fetchCategories();
                                                     }}
                                                 >
                                                     Delete
@@ -561,8 +697,9 @@ const DashboardTable = ({ users, setNavState, navState, setQuestionId, setTypeId
                                             <td className="px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium cursor-pointer">
                                                 <div
                                                     className="text-red-600 hover:text-red-900"
-                                                    onClick={() => {
-                                                        axios.delete(`/api/test/${test.id}`);
+                                                    onClick={async() => {
+                                                        await axios.delete(`/api/test/${test.id}`);
+                                                        showToast("Test deleted sucessfully","error");
                                                         fetchTests();
                                                     }}
                                                 >

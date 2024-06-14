@@ -1,27 +1,30 @@
-"use client"
+"use client";
 
 import { useCurrentQuestion } from '@/providers/CurrentQuestionContext';
 import { useCurrentSession } from '@/providers/CurrentSessionContext';
-import { useRouter } from 'next/navigation'
-import React from 'react'
-import TestTakerIns from './Instructions/TestTakerIns';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import InstructionsCaller from './Instructions/InstructionsCaller';
 import { useCurrentTest } from '@/providers/CurrentTestDetails';
 
 const Intermediete = ({ testSession }) => {
   const router = useRouter();
-  const { setCurrentSection,setInstructions,instructions } = useCurrentQuestion();
-  const { setCurrentSession,currentSession } = useCurrentSession();
+  const { setCurrentSection, setInstructions, instructions } = useCurrentQuestion();
+  const { setCurrentSession, currentSession } = useCurrentSession();
   const { setCurrentTest } = useCurrentTest();
-  console.log(testSession.test.sections[0])
-  setCurrentSection(testSession.test.sections[0]);
-  setCurrentSession(testSession);
-  setCurrentTest(testSession.test);
 
-  /* router.push(`/mock-tests/${testSession.id}`); */
+  useEffect(() => {
+    setCurrentSection(testSession.test.sections[0]);
+    setCurrentSession(testSession);
+    setCurrentTest(testSession.test);
+
+    // Uncomment the line below if you want to navigate after setting the session
+    // router.push(`/mock-tests/${testSession.id}`);
+  }, [testSession, setCurrentSection, setCurrentSession, setCurrentTest]);
+
   return (
     <InstructionsCaller sessionId={testSession.id} />
-  )
+  );
 }
 
-export default Intermediete
+export default Intermediete;

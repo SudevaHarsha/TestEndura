@@ -46,7 +46,6 @@ export async function POST(req, res) {
         sections: finalArray,
         overallDuration: OverallDuration.toString(),
         sectionDuration: durations,
-        totalAttempts: parseInt(),
         totalAttempts: parseInt(totalAttempts),
         testSectionId: sectionId,
         testSectionId,

@@ -1,5 +1,6 @@
 "use client"
 
+import { useCurrentQuestion } from "@/providers/CurrentQuestionContext";
 import React, { useEffect, useRef, useState } from "react";
 
 const SideNavbar = ({ users, setNavState, navState }) => {
@@ -7,6 +8,8 @@ const SideNavbar = ({ users, setNavState, navState }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [touchStartX, setTouchStartX] = useState(0);
   const [touchEndX, setTouchEndX] = useState(0);
+
+  const {setEdited} = useCurrentQuestion();
 
   useEffect(() => {
     const handleResize = () => {
@@ -40,6 +43,11 @@ const SideNavbar = ({ users, setNavState, navState }) => {
     }
   };
 
+  const handleSideNavState = (state) => {
+    setEdited(false);
+    setNavState(state);
+  }
+
   return <>
     <div
       className={`sm:hidden fixed top-0 left-0 bg-gray-100 text-black w-64 flex-col rounded-3xl min-h-screen h-auto transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0 transition-transform duration-300 ease-in-out`}
@@ -53,16 +61,16 @@ const SideNavbar = ({ users, setNavState, navState }) => {
       </div>
       {/* Fields */}
       <div className="flex flex-col flex-grow">
-        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'dashboard' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('dashboard')}>Dashboard</div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'dashboard' ? 'bg-gray-300' : ''}`} onClick={() => handleSideNavState('dashboard')}>Dashboard</div>
         <div>
-          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'users' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('users')}>Users</div>
-          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'tests' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('tests')}>Tests</div>
-          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'newTest' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('newTest')}>Make A Test</div>
-          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question types' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('question types')}>Question Types</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'users' ? 'bg-gray-300' : ''}`} onClick={() => handleSideNavState('users')}>Users</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'tests' ? 'bg-gray-300' : ''}`} onClick={() => handleSideNavState('tests')}>Tests</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'newTest' ? 'bg-gray-300' : ''}`} onClick={() => handleSideNavState('newTest')}>Make A Test</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question types' ? 'bg-gray-300' : ''}`} onClick={() => handleSideNavState('question types')}>Question Types</div>
         </div>
-        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('question')}>Create Question</div>
-        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'test' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('test')}>Create Test</div>
-        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'type' ? 'bg-gray-300' : ''}`} onClick={() => setNavState('type')}>Create Question Type</div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question' ? 'bg-gray-300' : ''}`} onClick={() => handleSideNavState('question')}>Create Question</div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'test' ? 'bg-gray-300' : ''}`} onClick={() => handleSideNavState('test')}>Create Test</div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'type' ? 'bg-gray-300' : ''}`} onClick={() => handleSideNavState('type')}>Create Question Type</div>
         {/* Add more field links as needed */}
       </div>
     </div>
@@ -73,17 +81,19 @@ const SideNavbar = ({ users, setNavState, navState }) => {
       </div>
       {/* Fields */}
       <div className="flex flex-col flex-grow">
-        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'dashboard' ? 'bg-gray-300' : ''}`} onClick={()=> setNavState('dashboard')}>Dashboard</div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'dashboard' ? 'bg-gray-300' : ''}`} onClick={()=> handleSideNavState('dashboard')}>Dashboard</div>
         <div>
-          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'users' ? 'bg-gray-300' : ''}`} onClick={()=> setNavState('users')}>Users</div>
-          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'tests' ? 'bg-gray-300' : ''}`} onClick={()=> setNavState('tests')}>Tests</div>
-          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'newTest' ? 'bg-gray-300' : ''}`} onClick={()=> setNavState('newTest')}>Make A Test</div>
-          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question types' ? 'bg-gray-300' : ''}`} onClick={()=> setNavState('question types')}>Question Types</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'users' ? 'bg-gray-300' : ''}`} onClick={()=> handleSideNavState('users')}>Users</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'categories' ? 'bg-gray-300' : ''}`} onClick={()=> handleSideNavState('categories')}>Categories</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'sections' ? 'bg-gray-300' : ''}`} onClick={()=> handleSideNavState('sections')}>Sections</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'tests' ? 'bg-gray-300' : ''}`} onClick={()=> handleSideNavState('tests')}>Tests</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question types' ? 'bg-gray-300' : ''}`} onClick={()=> handleSideNavState('question types')}>Question Types</div>
+          <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'newTest' ? 'bg-gray-300' : ''}`} onClick={()=> handleSideNavState('newTest')}>Make A Test</div>
         </div>
-        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'newSubject' ? 'bg-gray-300' : ''}`} onClick={()=>setNavState('newSubject')}>Create Subject</div>
-        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question' ? 'bg-gray-300' : ''}`} onClick={()=>setNavState('question')}>Create Question</div>
-        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'test' ? 'bg-gray-300' : ''}`} onClick={()=>setNavState('test')}>Create Test</div>
-        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'type' ? 'bg-gray-300' : ''}`} onClick={()=>setNavState('type')}>Create Question Type</div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'newSubject' ? 'bg-gray-300' : ''}`} onClick={()=>handleSideNavState('newSubject')}>Create Subject</div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'question' ? 'bg-gray-300' : ''}`} onClick={()=>handleSideNavState('question')}>Create Question</div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'test' ? 'bg-gray-300' : ''}`} onClick={()=>handleSideNavState('test')}>Create Test</div>
+        <div className={`px-4 py-2 hover:bg-gray-300 rounded cursor-pointer ${navState === 'type' ? 'bg-gray-300' : ''}`} onClick={()=>handleSideNavState('type')}>Create Question Type</div>
         {/* Add more field links as needed */}
       </div>
     </div>

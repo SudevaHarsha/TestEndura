@@ -9,6 +9,7 @@ import { CurrentQuestionProvider } from "@/providers/CurrentQuestionContext.js";
 import { TimerProvider } from "@/providers/TimerContext";
 import { CurrentSessionProvider } from "@/providers/CurrentSessionContext";
 import { CurrentTestProvider } from "@/providers/CurrentTestDetails";
+import { ToastProvider } from "@/providers/ToastContext";
 
 const font = Open_Sans({ subsets: ["latin"] });
 
@@ -24,13 +25,15 @@ export default function RootLayout({ children }) {
     <CurrentTestProvider>
       <CurrentQuestionProvider>
         <CurrentSessionProvider>
-          <TimerProvider>
-            <ClerkProvider>
-              <html lang="en">
-                <body className={font.className}>{children}</body>
-              </html>
-            </ClerkProvider>
-          </TimerProvider>
+          {/* <ToastProvider> */}
+            <TimerProvider>
+              <ClerkProvider>
+                <html lang="en">
+                  <body className={font.className}>{children}</body>
+                </html>
+              </ClerkProvider>
+            </TimerProvider>
+          {/* </ToastProvider> */}
         </CurrentSessionProvider>
       </CurrentQuestionProvider>
     </CurrentTestProvider>

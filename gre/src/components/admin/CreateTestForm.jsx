@@ -5,14 +5,15 @@ import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import dynamic from 'next/dynamic';
+import { useToast } from '@/providers/ToastContext';
 
 const JoditEditor = dynamic(() => import("jodit-react"), {
   ssr: false,
 });
 
-const CreateTestForm = ({ test }) => {
+const CreateTestForm = ({ test, testId, navState }) => {
 
-  const [state, setState] = useState('test');
+  const [state, setState] = useState(navState === 'sectionsEdit' ? 'section': navState==='categoryEdit' ? 'category' :'test');
   const editor = useRef(null);
 
   const [name, setName] = useState('');
@@ -30,6 +31,8 @@ const CreateTestForm = ({ test }) => {
   const [testSections, setTestSections] = useState([]);
   const [categories, setCategories] = useState([]);
 
+  const {showToast} = useToast();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,8 +43,32 @@ const CreateTestForm = ({ test }) => {
       }
     };
 
+    const fetchEditSectionData = async () => {
+      try {
+        const section = await axios.get(`/api/TestSection/${testId}`);
+        setName(section.data.section.name);
+        setCategoryId(section.data.section.categoryId);
+
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+
+    const fetchEditCategoryData = async () => {
+      try {
+        const category = await axios.get(`/api/TestCategory/${testId}`);;
+        setName(category.data.category.name);
+
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+
     categoryId && fetchData();
+    navState === 'sectionsEdit' && fetchEditSectionData();
+    navState === 'categoryEdit' && fetchEditCategoryData();
   }, [categoryId]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,6 +119,7 @@ const CreateTestForm = ({ test }) => {
           totalAttempts: numberOfAttempts
         });
         console.log("Question edited successfully: ", (await response).data.updatedTest);
+        showToast("Test edited sucessfully","success");
         return
       }
       const response = await axios.post('/api/createTest', {
@@ -105,7 +133,14 @@ const CreateTestForm = ({ test }) => {
         overallInstructions: overallInstructions
       });
       console.log('Test created:', response.data);
+      setName("");
+      setDescription("");
+      setNumberOfAttempts(0);
+      setNumberOfSections(0);
+      setSectionId("");
+      setCategoryId("");
       // Handle success
+      showToast("Test created sucessfully","success");
     } catch (error) {
       console.error('Error creating test:', error.response.data.error);
       // Handle error
@@ -115,19 +150,22 @@ const CreateTestForm = ({ test }) => {
   const handleSubmitCategory = async (e) => {
     e.preventDefault();
     try {
-      /* if (edited && test) {
-        const response = axios.patch(`/api/test/${test.id}`, {
+      if (edited && navState==='categoryEdit') {
+        const response = axios.patch(`/api/TestCategory/${testId}`, {
           name: name,
         });
-        console.log("Question edited successfully: ", (await response).data.updatedTest);
+        console.log("Question edited successfully: ", response);
+        showToast("category edited sucessfully",'success')
         return
-      } */
+      }
       console.log('category create');
       const response = await axios.post('/api/TestCategory', {
         name: name,
       });
       console.log('Test Ctegory created:', response.data);
       // Handle success
+      setName("");
+      showToast("Test Category created sucessfully","success");
     } catch (error) {
       console.error('Error creating test:', error.response.data.error);
       // Handle error
@@ -137,13 +175,12 @@ const CreateTestForm = ({ test }) => {
   const handleSubmitSection = async (e) => {
     e.preventDefault();
     try {
-      /* if (edited && test) {
-        const response = axios.patch(`/api/test/${test.id}`, {
-          name: name,
-        });
-        console.log("Question edited successfully: ", (await response).data.updatedTest);
+      if (edited) {
+        const editedSection = await axios.patch(`/api/TestSection/${testId}`,{name:name,categoryId:categoryId})
+        console.log("Question edited successfully: ", editedSection);
+        showToast("section edited successfully",'success')
         return
-      } */
+      }
       console.log('category create');
       const response = await axios.post('/api/TestSection', {
         name: name,
@@ -151,6 +188,10 @@ const CreateTestForm = ({ test }) => {
       });
       console.log('Test Ctegory created:', response.data.newSection);
       // Handle success
+      showToast(`Test Section ${name} created sucessfully`,"success");
+      setName("");
+      setCategoryId("");
+
     } catch (error) {
       console.error('Error creating test:', error.response.data.error);
       // Handle error

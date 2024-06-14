@@ -1,12 +1,14 @@
 "use server";
 
-import AttemptsExceeded from "@/components/AttemptsExceeded";
-import Instructions from "@/components/Instructions";
-import Intermediete from "@/components/Intermediete";
+import dynamic from "next/dynamic";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import React from "react";
+
+// Dynamically import components
+const AttemptsExceeded = dynamic(() => import("@/components/AttemptsExceeded"));
+const Intermediete = dynamic(() => import("@/components/Intermediete"));
 
 const page = async ({ params }) => {
   const { testId } = params;
