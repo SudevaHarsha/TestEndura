@@ -2,6 +2,8 @@ import { db } from "@/lib/db";
 import { currentProfile } from "@/lib/current-profile";
 const { NextResponse } = require("next/server");
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 600;
 export async function GET(req, res) {
   try {
     const filteredSessions = await db.testSession.findMany({
