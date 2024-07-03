@@ -34,9 +34,25 @@ export async function GET(req, { params }) {
     }
     if (
       questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
-      "Blank"
+      "MultipleAnswerQuestion"
     ) {
       Question = await db.multipleAnswerQuestion.findUnique({
+        where: { id: params.questionId },
+      });
+    }
+    if (
+      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
+      "TextCompletion"
+    ) {
+      Question = await db.multipleAnswerQuestion.findUnique({
+        where: { id: params.questionId },
+      });
+    }
+    if (
+      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
+      "DataInterpretation"
+    ) {
+      Question = await db.dataInterpretationQuestion.findUnique({
         where: { id: params.questionId },
       });
     }
@@ -67,41 +83,15 @@ export async function GET(req, { params }) {
   }
 }
 
-export async function PATCH(req, {params}) {
-  const profile = currentProfile();
+export async function PATCH(req, { params }) {
+  const profile = await currentProfile();
 
-  if(profile.role != 'admin') {
-    return NextResponse.error(new Error("Unauthorized"), { status: 404 });
+  if (profile.role !== 'admin') {
+    return NextResponse.error(new Error("Unauthorized"), { status: 403 });
   }
-  const {
-    testId,
-    typeId,
-    questionText,
-    prompt,
-    numberOfOptions,
-    options,
-    correctAnswer,
-    image,
-    select,
-    blankType,
-    highlighted,
-    section,
-    numberOfBlanks,
-    blankOptions,
-    paragraph,
-    highlightedSentence,
-    Quantity1,
-    Quantity2,
-    correctSentence,
-    numerator,
-    denominator,
-    units,
-    correctNumeric,
-    description,
-    marks
-  } = await req.json();
+
   try {
-    console.log(
+    const {
       testId,
       typeId,
       questionText,
@@ -118,6 +108,7 @@ export async function PATCH(req, {params}) {
       blankOptions,
       paragraph,
       highlightedSentence,
+      Quantity1,
       Quantity2,
       correctSentence,
       numerator,
@@ -126,71 +117,48 @@ export async function PATCH(req, {params}) {
       correctNumeric,
       description,
       marks
-    );
+    } = await req.json();
 
-    let editedQuestion = {};
     const questionTypes = await db.questionType.findMany();
 
-    if (
-      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
-      "Analytical Writing"
-    ) {
-      const sentences = paragraph.split(". ");
-      const index = sentences.find((sentence, index) => {
-        if (sentence === correctAnswer) return index;
-      });
-      const editedQuestion = await db.analyticalWritingQuestion.update({
-        where : {
-          id: params.questionId
-        },
+    let editedQuestion;
+
+    if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "Analytical Writing") {
+      editedQuestion = await db.analyticalWritingQuestion.update({
+        where: { id: params.questionId },
         data: {
           testId,
           typeId,
           questionText,
           correctAnswer,
-          questionText,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           prompt,
         },
       });
-    }
-    if (
-      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
-      "Reading Comprehension"
-    ) {
-      const sentences = paragraph.split(". ");
-      const index = sentences.find((sentence, index) => {
-        if (sentence === correctAnswer) return index;
-      });
-      const editedQuestion = await db.readingComprehensionQuestion.update({
-        where : {
-          id:params.questionId
-        },
+    } else if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "Reading Comprehension") {
+      editedQuestion = await db.readingComprehensionQuestion.update({
+        where: { id: params.questionId },
         data: {
           testId,
           typeId,
           questionText,
           options,
-          option: parseInt(correctAnswer.length),
-          correctAnswer: correctAnswer,
+          correctAnswer,
           correctSentence: [correctSentence],
           select,
           highlighted,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           paragraph,
           highlightedSentence,
         },
       });
-    }
-    if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "MultipleAnswerQuestion" || questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "TextCompletion") {
-      const editedQuestion = await db.multipleAnswerQuestion.update({
-        where : {
-          id:params.questionId
-        },
+    } else if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "MultipleAnswerQuestion") {
+      editedQuestion = await db.multipleAnswerQuestion.update({
+        where: { id: params.questionId },
         data: {
           testId,
           typeId,
@@ -200,66 +168,70 @@ export async function PATCH(req, {params}) {
           blankType,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           numberOfBlanks,
           blankOptions,
-          numerator:parseInt(numerator),
-          denominator:parseInt(denominator),
+          numerator: parseInt(numerator),
+          denominator: parseInt(denominator),
           units,
           correctNumeric: parseInt(correctNumeric)
         },
       });
-    }
-    if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "MCQ") {
-      const editedQuestion = await db.multipleChoiceQuestion.update({
-        where : {
-          id:params.questionId
-        },
+    } else if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "TextCompletion") {
+      editedQuestion = await db.multipleAnswerQuestion.update({
+        where: { id: params.questionId },
         data: {
           testId,
           typeId,
           questionText,
           options,
-          option: parseInt(correctAnswer.length),
+          correctAnswer,
+          blankType,
+          section,
+          description,
+          marks: parseInt(marks),
+          numberOfBlanks,
+          blankOptions,
+          numerator: parseInt(numerator),
+          denominator: parseInt(denominator),
+          units,
+          correctNumeric: parseInt(correctNumeric)
+        },
+      });
+    } else if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "MCQ") {
+      editedQuestion = await db.multipleChoiceQuestion.update({
+        where: { id: params.questionId },
+        data: {
+          testId,
+          typeId,
+          questionText,
+          options,
           correctAnswer,
           image,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
         },
       });
-    }
-    if (
-      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
-      "Quantitative"
-    ) {
-      const editedQuestion = await db.quantitativeQuestion.update({
-        where : {
-          id:params.questionId
-        },
+    } else if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "Quantitative") {
+      editedQuestion = await db.quantitativeQuestion.update({
+        where: { id: params.questionId },
         data: {
           testId,
           typeId,
           questionText,
           options,
-          option: parseInt(correctAnswer.length),
           correctAnswer,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           Quantity1,
           Quantity2,
         },
       });
-    }
-    if (
-      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
-      "DataInterpretation"
-    ) {
-      const editedQuestion = await db.DataInterpretationQuestion.update({
-        where : {
-          id:params.questionId
-        },
+    } else if (questionTypes.find((Qtype) => Qtype.id === typeId)?.type === "DataInterpretation") {
+      editedQuestion = await db.dataInterpretationQuestion.update({
+        where: { id: params.questionId },
         data: {
           testId,
           typeId,
@@ -269,21 +241,24 @@ export async function PATCH(req, {params}) {
           optionType,
           section,
           description,
-          marks:parseInt(marks),
+          marks: parseInt(marks),
           images: ImageUrl,
-          numerator:parseInt(numerator),
-          denominator:parseInt(denominator),
+          numerator: parseInt(numerator),
+          denominator: parseInt(denominator),
           units,
           correctNumeric: parseInt(correctNumeric)
         },
       });
     }
 
-    console.log(editedQuestion);
-    return new NextResponse(200, editedQuestion);
+    if (!editedQuestion) {
+      return NextResponse.error(new Error("Question not found"), { status: 404 });
+    }
+
+    return NextResponse.json({ editedQuestion });
   } catch (error) {
-    console.log(error);
-    return new NextResponse(500, { error: "Could not update question" });
+    console.error("Error in updating question:", error);
+    return NextResponse.error(error, { status: 500 });
   }
 }
 

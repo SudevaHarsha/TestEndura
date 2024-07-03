@@ -62,13 +62,20 @@ const QuantitativeQuestions = ({ question, NextQuestion }) => {
 
   return <>
     <div className="h-auto md:w-[80vw] max-w-4xl w-[90vw] flex flex-col justify-center items-center">
-      
+
       <div className="d-block sm:flex w-full justify-between mt-5">
         <div className={`${questionHasImage ? `w-full` : `w-full`}`}>
           <Card className="w-full mt-4 rounded-2xl">
             <CardHeader className="flex flex-row items-center">
               <CardHeader className="flex-grow text-lg">
                 {question.questionText}
+                {questionHasImage && !question.ImageUrl2 && <Image
+                  width={100}
+                  height={80}
+                  src={question.ImageUrl1}
+                  alt="Quantity 1 Image"
+                  className="h-48 w-80 mt-4"
+                />}
                 <div className="flex flex-row justify-center gap-4">
                   <div
                     className={`w-[50%] flex flex-col justify-center items-center text-center border-r-2 pr-1}`

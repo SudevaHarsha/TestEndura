@@ -251,12 +251,12 @@ const CreateQuestionForm = ({ questionTypes, tests, question, fetchQuestions }) 
 
       if (edited && question) {
         const response = axios.patch(`/api/questions/${question.id}/${question.typeId}`, { ...formData });
-        showToast('Question edited sucessfully', 'success');
+        response && showToast('Question edited sucessfully', 'success');
         console.log("Question edited successfully: ", (await response).data.Question);
         return
       }
       const response = await axios.post('/api/questions', { ...formData });
-      showToast('Question created sucessfully', 'error');
+      showToast('Question created sucessfully', 'success');
       console.log('Question created successfully:', response.data);
       // Reset form after successful creation
       setFormData({
