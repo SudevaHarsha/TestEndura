@@ -67,13 +67,13 @@ const ReadingCompehension = ({ question, NextQuestion }) => {
             <div className="p-4 text-justify border rounded-2xl sm:w-[50%]">
                 <p>  {sentences.map((sentence, index) => (
                     <span key={index} className={`${sentence.includes(targetSentence) && question.highlighted === true ? "bg-strong text-white" : ""
-                        } ${(selectedSentence === index || selectedChoices.includes(sentence)) && selectmode === true ? "underline" : ""}`} onClick={() => {
+                        } ${(selectedSentence === index || selectedChoices?.includes(sentence)) && selectmode === true ? "underline" : ""}`} onClick={() => {
                             setSelectedSentence(index);
-                            selectedChoices.length < 1 && setSelectedChoices([...selectedChoices, sentence])
+                            selectedChoices?.length < 1 && setSelectedChoices([...selectedChoices, sentence])
                         }}
                         style={{
                             textDecorationColor:
-                                result && correctAnswer?.includes(sentence) ? "green" : result && correctAnswer?.includes(sentence) && result && selectedChoices.includes(sentence) ? 'green' : result && !correctAnswer?.includes(sentence) && selectedChoices.includes(sentence) ? "red" : "",
+                                result && correctAnswer?.includes(sentence) ? "green" : result && correctAnswer?.includes(sentence) && result && selectedChoices?.includes(sentence) ? 'green' : result && !correctAnswer?.includes(sentence) && selectedChoices?.includes(sentence) ? "red" : "",
                         }}
                     >
                         {sentence}
@@ -96,10 +96,10 @@ const ReadingCompehension = ({ question, NextQuestion }) => {
                 <div className={`${questionHasImage ? `sm:w-[50%]` : `w-full`}`}>
                     <Card className="w-full rounded-2xl">
                         <CardHeader className="flex flex-row items-center">
-                            <CardTitle className="mr-5 text-center divide-y divide-zinc-600/50 flex items-center justify-center">
-                                <div className="mt-1">Q :</div>
+                            <CardTitle className="mr-3 text-center divide-y divide-zinc-600/50 flex items-center justify-center">
+                                <div className="mt-1">Q:</div>
                             </CardTitle>
-                            <div className="flex-grow text-lg">
+                            <div className="flex-grow text-lg text-wrap h-auto">
                                 {question?.questionText}
                             </div>
                         </CardHeader>

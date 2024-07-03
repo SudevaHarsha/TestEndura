@@ -45,6 +45,7 @@ const Page = async () => {
           />
         </div>
       </div>
+
       <Suspense fallback={<div>Loading...</div>}>
         <TestCategories testCategories={testCategories} sectionsByCategory={sectionsByCategory} />
       </Suspense>

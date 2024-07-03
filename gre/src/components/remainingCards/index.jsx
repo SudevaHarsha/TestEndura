@@ -14,8 +14,11 @@ const RemainingCards = ({ filteredSessions }) => {
 
   console.log(filteredSessions);
   const handleResumeClick = (index) => {
+
+    const cq = filteredSessions[filteredSessions?.length - 4 + index].currentQuestion === 0 ? filteredSessions[filteredSessions?.length - 4 + index].currentQuestion : filteredSessions[filteredSessions?.length - 4 + index].currentQuestion - 1;
+
     setCurrentSession(filteredSessions[filteredSessions?.length - 4 + index]);
-    setCurrentQuestion(filteredSessions[filteredSessions?.length - 4 + index].currentQuestion - 1)
+    setCurrentQuestion(cq);
     console.log(filteredSessions[filteredSessions?.length - 4 + index].id)
     setCurrentSection(filteredSessions[filteredSessions?.length - 4 + index].currentSection)
     setResume(true);

@@ -50,6 +50,7 @@ const OpenEndedQuestions = ({ question, NextQuestion }) => {
   const questionHasImage = false; // Set this to true if the question has an image
 
   const currentBlank = question;
+  console.log("Blank :",currentBlank);
 
   useEffect(() => {
     // When the component mounts, check if there are selected choices for the current question in the session data
@@ -120,7 +121,7 @@ const OpenEndedQuestions = ({ question, NextQuestion }) => {
             </CardHeader>
           </Card>
           <div className="flex flex-col items-center justify-center w-full mt-4">
-            {currentBlank.blankType === "input" ? (
+            {(currentBlank.blankType === "input") ? (
               // Render input fields for blanks
               currentBlank.blanks.map((blank, index) => (
                 <input
@@ -136,6 +137,10 @@ const OpenEndedQuestions = ({ question, NextQuestion }) => {
                   className="border-b p-2 mb-4 focus:outline-none focus:border-strong/70"
                 />
               ))
+            ) : currentBlank.questionType.type === "TextCompletion" ? (
+              <div className="flex flex-col items-center justify-center w-full mt-4">
+                        <Options question={question}/>
+                    </div>
             ) : currentBlank.blankType === "numeric" ? (
               // Render numeric input
               <div>

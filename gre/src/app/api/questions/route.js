@@ -169,9 +169,7 @@ export async function POST(req, res) {
     }
     if (
       questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
-        "DataInterpretation" ||
-      questionTypes.find((Qtype) => Qtype.id === typeId)?.type ===
-        "TextCompletion"
+        "DataInterpretation"
     ) {
       const newQuestion = await db.DataInterpretationQuestion.create({
         data: {
@@ -291,6 +289,19 @@ export async function PUT(req, res) {
           break;
 
         case "MultipleAnswerQuestion":
+          await db.multipleAnswerQuestion.update({
+            where: {
+              id: id,
+            },
+            data: {
+              testId,
+              subject,
+              section,
+            },
+          });
+          break;
+
+        case "TextCompletion":
           await db.multipleAnswerQuestion.update({
             where: {
               id: id,

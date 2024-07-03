@@ -153,7 +153,7 @@ const AllQuestions = ({ questions, testSession, test, previousSectionsLengths })
         if (question.questionType.type === "MCQ") {
           console.log('MCQ');
           return <MCQ key={index} question={question} NextQuestion={NextQuestion} />;
-        } else if (question.questionType.type === "MultipleAnswerQuestion" || question.type === "input" || question.type === "TextCompletion") {
+        } else if (question.questionType.type === "MultipleAnswerQuestion" || question.type === "input" || question.questionType.type === "TextCompletion") {
           return <OpenEndedQuestions key={index} question={question} NextQuestion={NextQuestion} />;
         } else if (question.questionType.type === "Quantitative") {
           return <QuantitativeQuestions key={index} question={question} NextQuestion={NextQuestion} />;

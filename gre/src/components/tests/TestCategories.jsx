@@ -6,6 +6,7 @@ import { useCurrentTest } from '@/providers/CurrentTestDetails'
 import VegetableCards from '../VegetableCards'
 import axios from 'axios';
 import { useRouter } from 'next/navigation'
+import RemainingCardsCaller from '../RemainingCardsCaller';
 
 const TestCategories = ({ testCategories, tests }) => {
 
@@ -87,7 +88,7 @@ const TestCategories = ({ testCategories, tests }) => {
                     return <Button
                         theme="primary"
                         key={testCategory.id}
-                        className={`mr-2 bg-white text-gray-500 font-bold hover:bg-strong/50 hover:text-white hover:font-extrabold ${testCategory.id ===currentCategory && "border-b-2 border-strong"}`}
+                        className={`mr-2 bg-white text-gray-500 font-bold hover:bg-strong/50 hover:text-white hover:font-extrabold ${testCategory.id === currentCategory && "border-b-2 border-strong"}`}
                         onClick={() => handleTestCategoryClick(testCategory)}
                     >
                         {testCategory.name}
@@ -99,7 +100,10 @@ const TestCategories = ({ testCategories, tests }) => {
             currentTestCategory && currentTestSection.length === 0 && <VegetableCards tests={testSections} handleClick={handleClick} />
         }
         {
-            currentTestSection && <VegetableCards tests={actualTests} handleClick={handleClick} />
+            currentTestSection?.id && <>
+                <RemainingCardsCaller />
+                <VegetableCards tests={actualTests} handleClick={handleClick} />
+            </>
         }
     </>
 }

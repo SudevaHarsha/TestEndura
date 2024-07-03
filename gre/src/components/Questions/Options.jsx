@@ -7,7 +7,7 @@ import { FaCheckCircle } from 'react-icons/fa';
 const Options = ({ question, selectmode }) => {
     const [clicked, setClicked] = useState(false);
     const questionHasImage = false; // Set this to true if the question has an image
-    const maxSelections = question.options.length;
+    const maxSelections = question.option || question.options.length;
     const { selectedChoices, setSelectedChoices, previousLength, currentQuestion, result, resume } = useCurrentQuestion();
     const { currentSession } = useCurrentSession();
 
